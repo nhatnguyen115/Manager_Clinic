@@ -64,6 +64,17 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
                         "WHERE p.user.id = :userId OR d.user.id = :userId")
         List<Appointment> findAllByUserId(@Param("userId") UUID userId);
 
+        @Query("SELECT DISTINCT a FROM Appointment a " +
+                        "JOIN FETCH a.patient p " +
+                        "JOIN FETCH p.user " +
+                        "JOIN FETCH a.doctor d " +
+                        "JOIN FETCH d.user " +
+                        "LEFT JOIN FETCH a.specialty " +
+                        "WHERE p.user.id = :userId AND a.status IN :statuses")
+        List<Appointment> findAllByPatientUserIdAndStatusIn(
+                        @Param("userId") UUID userId,
+                        @Param("statuses") List<AppointmentStatus> statuses);
+
         // ── Admin queries ──
 
         @Query("SELECT COUNT(a) FROM Appointment a WHERE a.appointmentDate BETWEEN :from AND :to AND a.status <> 'CANCELLED'")

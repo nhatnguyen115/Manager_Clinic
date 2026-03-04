@@ -235,6 +235,12 @@ export interface SelectOption {
 // Backend Response Types (match actual API DTOs)
 // ============================================
 
+export interface ApiResponse<T> {
+    code: number;
+    message?: string;
+    result: T;
+}
+
 // Matches AppointmentResponse.java
 export interface AppointmentResponse {
     id: string;
@@ -250,6 +256,7 @@ export interface AppointmentResponse {
     status: AppointmentStatus;
     symptoms?: string;
     notes?: string;
+    consultationFee?: number;
     cancelledBy?: string;
     cancelledReason?: string;
     confirmedAt?: string;
@@ -257,6 +264,7 @@ export interface AppointmentResponse {
     createdAt: string;
     updatedAt?: string;
 }
+
 
 // Matches PatientResponse.java
 export interface PatientResponse {

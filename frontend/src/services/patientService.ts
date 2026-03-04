@@ -65,6 +65,11 @@ export const getMyAppointments = async (): Promise<AppointmentResponse[]> => {
     return response.data.result || [];
 };
 
+export const getAppointmentById = async (id: string): Promise<AppointmentResponse> => {
+    const response = await apiClient.get(`/appointments/${id}`);
+    return response.data.result;
+};
+
 // ─── Medical Records ───
 
 export const getMyRecords = async (): Promise<MedicalRecordResponse[]> => {

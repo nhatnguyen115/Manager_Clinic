@@ -199,6 +199,7 @@ public class AppointmentService {
                         if (appointment.getDoctor().getUser() != null) {
                                 builder.doctorName(appointment.getDoctor().getUser().getFullName());
                         }
+                        builder.consultationFee(appointment.getDoctor().getConsultationFee());
                 }
 
                 if (appointment.getSpecialty() != null) {

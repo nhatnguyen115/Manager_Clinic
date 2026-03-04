@@ -121,7 +121,6 @@ com\clinic\dto\response\AppointmentResponse.class
 com\clinic\dto\response\ApiResponse.class
 com\clinic\security\AppointmentSecurity.class
 com\clinic\controller\AppointmentController.class
-com\clinic\service\VNPayService.class
 com\clinic\repository\AuditLogRepository.class
 com\clinic\entity\Medicine$MedicineBuilder.class
 com\clinic\entity\Prescription.class

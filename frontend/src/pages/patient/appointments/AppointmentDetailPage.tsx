@@ -12,7 +12,9 @@ import {
     X,
     ArrowRight,
     ClipboardList,
+    CreditCard,
 } from 'lucide-react';
+
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Badge } from '@components/ui/Badge';
@@ -345,7 +347,15 @@ const AppointmentDetailPage = () => {
                         </Button>
                     </Link>
                 )}
+                {appointment.status === 'CONFIRMED' && (
+                    <Link to={`/checkout/${appointment.id}`} className="flex-1">
+                        <Button fullWidth className="bg-primary-600 hover:bg-primary-500 text-white shadow-lg shadow-primary-900/20">
+                            <CreditCard size={16} className="mr-2" /> Thanh toán ngay
+                        </Button>
+                    </Link>
+                )}
                 <Link to="/booking/specialty" className="flex-1">
+
                     <Button fullWidth variant="outline">
                         <ArrowRight size={16} className="mr-2" /> Đặt lịch mới
                     </Button>

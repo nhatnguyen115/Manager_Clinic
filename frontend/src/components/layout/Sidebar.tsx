@@ -11,7 +11,9 @@ import {
     Clock,
     UserCircle,
     UserPlus,
-    Stethoscope
+    Stethoscope,
+    CreditCard,
+    Receipt
 } from 'lucide-react';
 
 import { clsx, type ClassValue } from 'clsx';
@@ -38,6 +40,7 @@ const patientNavItems = [
     { name: 'Đặt lịch khám', icon: PlusCircle, href: '/booking/specialty' },
     { name: 'Lịch hẹn của tôi', icon: Calendar, href: '/appointments' },
     { name: 'Bệnh án', icon: FileText, href: '/medical-history' },
+    { name: 'Lịch sử giao dịch', icon: CreditCard, href: '/payment/history' },
     { name: 'Hồ sơ', icon: UserCircle, href: '/profile' },
 ];
 
@@ -48,6 +51,7 @@ const adminNavItems = [
     { name: 'Bệnh nhân', icon: UserCircle, href: '/admin/patients' },
     { name: 'Chuyên khoa', icon: Stethoscope, href: '/admin/specialties' },
     { name: 'Lịch hẹn', icon: Calendar, href: '/admin/appointments' },
+    { name: 'Hóa đơn', icon: Receipt, href: '/admin/invoices' },
 ];
 
 export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {

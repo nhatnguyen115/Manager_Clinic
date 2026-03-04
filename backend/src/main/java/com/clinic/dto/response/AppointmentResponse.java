@@ -34,4 +34,5 @@ public class AppointmentResponse {
     LocalDateTime completedAt;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+    java.math.BigDecimal consultationFee;
 }

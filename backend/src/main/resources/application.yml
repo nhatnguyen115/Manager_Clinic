@@ -51,10 +51,11 @@ app:
     max-age: 3600
   
   vnpay:
-    tmn-code: ${VNP_TMN_CODE:2QXG2YLS}
-    hash-secret: ${VNP_HASH_SECRET:972QXG2YLS...}
+    tmn-code: CH89FUQZ  
+    hash-secret: 5EKGIZ5T6EX2QFM7J1STI8K2IX0JLTLY
     url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-    return-url: http://localhost:8080/api/payments/vnpay-callback
+    return-url: http://localhost:5173/payment/result
+
   
   cloudinary:
     cloud-name: ${CLOUDINARY_CLOUD_NAME:dummy}
