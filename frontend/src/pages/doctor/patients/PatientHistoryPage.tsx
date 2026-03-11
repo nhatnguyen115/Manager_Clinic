@@ -44,8 +44,10 @@ const PatientHistoryPage = () => {
     }, [patientId]);
 
     const getAge = (dob: string) => {
+        if (!dob) return 0;
         const birth = new Date(dob);
         const today = new Date();
+        if (isNaN(birth.getTime())) return 0;
         let age = today.getFullYear() - birth.getFullYear();
         if (today.getMonth() < birth.getMonth() || (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())) age--;
         return age;
@@ -237,7 +239,7 @@ const PatientHeroCard = ({ patient, getAge }: { patient: PatientResponse; getAge
                 {/* Profile Section */}
                 <div className="p-6 lg:p-8 flex flex-col md:flex-row items-center gap-6 lg:border-r lg:border-r-slate-800 flex-1">
                     <div className="h-24 w-24 rounded-3xl bg-gradient-to-br from-primary-600 to-indigo-700 flex items-center justify-center shadow-2xl relative">
-                        <span className="text-4xl font-black text-white">{patient.fullName.charAt(0)}</span>
+                        <span className="text-4xl font-black text-white">{patient.fullName ? patient.fullName.charAt(0) : '?'}</span>
                         <div className="absolute -bottom-2 -right-2 h-8 w-8 rounded-xl bg-slate-900 border-2 border-primary-600 flex items-center justify-center">
                             <UserCheck size={16} className="text-primary-500" />
                         </div>

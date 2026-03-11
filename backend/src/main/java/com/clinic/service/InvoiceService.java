@@ -27,6 +27,7 @@ public class InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final PaymentRepository paymentRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public Invoice createInvoiceFromPayment(Payment payment) {
@@ -105,6 +106,18 @@ public class InvoiceService {
         paymentRepository.save(payment);
 
         log.info("Invoice {} marked as paid manually via {}", invoiceId, method);
+
+        // Web Notification to Patient
+        notificationService.sendNotification(
+                payment.getAppointment().getPatient().getUser(),
+                "Thanh toán thành công",
+                "Hóa đơn " + invoice.getInvoiceNumber() + " cho lịch hẹn ngày "
+                        + payment.getAppointment().getAppointmentDate()
+                        + " đã được thanh toán thành công (Tiền mặt)",
+                com.clinic.entity.enums.NotificationType.PAYMENT,
+                "INVOICE",
+                invoice.getId());
+
         return mapToResponse(invoice);
     }
 

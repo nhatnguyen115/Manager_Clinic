@@ -32,7 +32,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
                         "a.doctor.id = :doctorId AND " +
                         "a.appointmentDate = :date AND " +
                         "a.appointmentTime = :time AND " +
-                        "a.status NOT IN ('CANCELLED')")
+                        "a.status <> com.clinic.entity.enums.AppointmentStatus.CANCELLED")
         Optional<Appointment> findExistingAppointment(
                         @Param("doctorId") UUID doctorId,
                         @Param("date") LocalDate date,
@@ -41,7 +41,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
         @Query("SELECT COUNT(a) FROM Appointment a WHERE " +
                         "a.doctor.id = :doctorId AND " +
                         "a.appointmentDate = :date AND " +
-                        "a.status NOT IN ('CANCELLED')")
+                        "a.status <> com.clinic.entity.enums.AppointmentStatus.CANCELLED")
         long countByDoctorAndDate(@Param("doctorId") UUID doctorId, @Param("date") LocalDate date);
 
         List<Appointment> findByAppointmentDateAndStatus(LocalDate date, AppointmentStatus status);
@@ -77,14 +77,33 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
 
         // ── Admin queries ──
 
-        @Query("SELECT COUNT(a) FROM Appointment a WHERE a.appointmentDate BETWEEN :from AND :to AND a.status <> 'CANCELLED'")
+        @Query("SELECT COUNT(a) FROM Appointment a WHERE a.appointmentDate BETWEEN :from AND :to AND a.status <> com.clinic.entity.enums.AppointmentStatus.CANCELLED")
         long countByDateRange(@Param("from") LocalDate from, @Param("to") LocalDate to);
+
+        @Query("SELECT COUNT(a) FROM Appointment a WHERE a.appointmentDate BETWEEN :from AND :to AND a.status = :status")
+        long countByDateRangeAndStatus(@Param("from") LocalDate from, @Param("to") LocalDate to,
+                        @Param("status") AppointmentStatus status);
 
         @Query("SELECT COUNT(a) FROM Appointment a WHERE a.status = :status")
         long countByStatus(@Param("status") AppointmentStatus status);
 
         @Query("SELECT s.name, COUNT(a) FROM Appointment a JOIN a.specialty s GROUP BY s.name ORDER BY COUNT(a) DESC")
         List<Object[]> countBySpecialty();
+
+        @Query("SELECT a.status, COUNT(a) FROM Appointment a GROUP BY a.status")
+        List<Object[]> countByStatusDistribution();
+
+        @Query("SELECT a.appointmentDate, COUNT(a) FROM Appointment a WHERE a.appointmentDate BETWEEN :from AND :to GROUP BY a.appointmentDate ORDER BY a.appointmentDate")
+        List<Object[]> getAppointmentTrend(@Param("from") LocalDate from, @Param("to") LocalDate to);
+
+        @Query("SELECT d.user.fullName, COUNT(a.id), SUM(d.consultationFee), AVG(r.rating) " +
+                        "FROM Appointment a " +
+                        "JOIN a.doctor d " +
+                        "LEFT JOIN d.reviews r " +
+                        "WHERE a.status = com.clinic.entity.enums.AppointmentStatus.COMPLETED AND a.appointmentDate BETWEEN :from AND :to "
+                        +
+                        "GROUP BY d.id, d.user.fullName")
+        List<Object[]> getDoctorPerformance(@Param("from") LocalDate from, @Param("to") LocalDate to);
 
         @Query("SELECT DISTINCT a FROM Appointment a " +
                         "LEFT JOIN FETCH a.patient p LEFT JOIN FETCH p.user " +

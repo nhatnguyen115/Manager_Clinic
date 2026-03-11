@@ -11,13 +11,14 @@ public enum ErrorCode {
     USER_EXISTED(1002, "User existed", HttpStatus.BAD_REQUEST),
     USERNAME_INVALID(1003, "Username must be at least 4 characters", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD(1004, "Password must be at least 6 characters", HttpStatus.BAD_REQUEST),
-    USER_NOT_EXISTED(1005, "User not existed", HttpStatus.NOT_FOUND),
+    USER_NOT_EXISTED(1005, "Email không tồn tại trong hệ thống", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
     EMAIL_ALREADY_REGISTERED(1009, "Email already registered", HttpStatus.BAD_REQUEST),
     ROLE_NOT_FOUND(1010, "Role not found", HttpStatus.NOT_FOUND),
     USER_LOCKED(1011, "Tài khoản của bạn đã bị khóa", HttpStatus.FORBIDDEN),
+    INVALID_CREDENTIALS(1012, "Mật khẩu không chính xác", HttpStatus.UNAUTHORIZED),
 
     // Appointment errors
     APPOINTMENT_SLOT_TAKEN(2001, "This time slot is already taken", HttpStatus.BAD_REQUEST),

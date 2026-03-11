@@ -41,7 +41,12 @@ const AppointmentListPage = () => {
                 dateFrom: dateFrom || undefined,
                 dateTo: dateTo || undefined
             });
-            setAppointments(data || []);
+            const sorted = (data || []).sort((a, b) => {
+                const dateDiff = (b.appointmentDate || '').localeCompare(a.appointmentDate || '');
+                if (dateDiff !== 0) return dateDiff;
+                return (b.appointmentTime || '').localeCompare(a.appointmentTime || '');
+            });
+            setAppointments(sorted);
             setSelectedIds(new Set()); // Clear selection on reload
         } catch (error) {
             console.error('Failed to load appointments:', error);

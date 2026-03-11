@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { Menu, Bell, LogOut, User as UserIcon, Settings, ChevronDown } from 'lucide-react';
+import { Menu, LogOut, User as UserIcon, Settings, ChevronDown } from 'lucide-react';
 import { Avatar } from '@components/ui/Avatar';
 import { useAuth } from '@contexts/AuthContext';
 import { ConfirmationModal } from '@components/ui/ConfirmationModal';
 import { Link } from 'react-router-dom';
+import { NotificationDropdown } from '../notifications/NotificationDropdown';
+import { Logo } from '@components/ui/Logo';
 
 export const Header = ({ onMenuClick }: { onMenuClick?: () => void }) => {
     const { user, logout } = useAuth();
@@ -37,21 +39,13 @@ export const Header = ({ onMenuClick }: { onMenuClick?: () => void }) => {
                     >
                         <Menu size={24} />
                     </button>
-                    <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-lg bg-primary-600 flex items-center justify-center">
-                            <span className="text-white font-bold">C</span>
-                        </div>
-                        <span className="text-xl font-bold tracking-tight text-slate-50 hidden sm:block">
-                            Clinic<span className="text-primary-500">Pro</span>
-                        </span>
-                    </div>
+                    <Link to="/" className="flex items-center gap-4">
+                        <Logo />
+                    </Link>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <button className="relative p-2 text-slate-400 hover:text-slate-50 hover:bg-slate-800 rounded-full transition-colors">
-                        <Bell size={20} />
-                        <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-error" />
-                    </button>
+                    <NotificationDropdown />
 
                     <div className="h-6 w-px bg-slate-700 mx-2" />
 

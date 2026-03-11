@@ -158,6 +158,20 @@ export interface News {
     createdAt: string;
 }
 
+// Notification Types
+export interface Notification {
+    id: string;
+    title: string;
+    message: string;
+    type: NotificationType;
+    isRead: boolean;
+    relatedEntityType?: string;
+    relatedEntityId?: string;
+    createdAt: string;
+}
+
+export type NotificationType = 'APPOINTMENT' | 'PAYMENT' | 'SYSTEM' | 'REMINDER';
+
 // Common Types
 export interface Pagination {
     page: number;
@@ -546,4 +560,40 @@ export interface AdminAppointmentFilters {
     dateTo?: string;
     doctorId?: string;
     status?: string;
+}
+
+// Reports & Statistics Types
+export interface DataPoint {
+    label: string;
+    value?: number;
+    count?: number;
+}
+
+export interface CategoryStat {
+    category: string;
+    count: number;
+    value?: number;
+}
+
+export interface DoctorPerformance {
+    doctorName: string;
+    appointmentCount: number;
+    totalRevenue: number;
+    averageRating: number;
+}
+
+export interface ReportResponse {
+    totalRevenue: number;
+    totalAppointments: number;
+    completedAppointments: number;
+    totalPatients: number;
+    revenueTrend: DataPoint[];
+    appointmentTrend: DataPoint[];
+    specialtyDistribution: CategoryStat[];
+    statusDistribution: CategoryStat[];
+    genderDistribution: CategoryStat[];
+    ageDistribution: CategoryStat[];
+    doctorPerformance: DoctorPerformance[];
+    userRegistrationTrend: DataPoint[];
+    roleDistribution: CategoryStat[];
 }

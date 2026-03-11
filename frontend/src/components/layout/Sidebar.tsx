@@ -1,10 +1,10 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
+import { Logo } from '@components/ui/Logo';
 import {
     LayoutDashboard,
     Calendar,
     Users,
     ClipboardList,
-    Settings,
     X,
     PlusCircle,
     FileText,
@@ -13,7 +13,8 @@ import {
     UserPlus,
     Stethoscope,
     CreditCard,
-    Receipt
+    Receipt,
+    BarChart
 } from 'lucide-react';
 
 import { clsx, type ClassValue } from 'clsx';
@@ -52,6 +53,7 @@ const adminNavItems = [
     { name: 'Chuyên khoa', icon: Stethoscope, href: '/admin/specialties' },
     { name: 'Lịch hẹn', icon: Calendar, href: '/admin/appointments' },
     { name: 'Hóa đơn', icon: Receipt, href: '/admin/invoices' },
+    { name: 'Báo cáo', icon: BarChart, href: '/admin/reports' },
 ];
 
 export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
@@ -83,12 +85,9 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                 <div className="flex flex-col h-full">
                     {/* Logo / Brand */}
                     <div className="flex h-16 items-center justify-between px-6 border-b border-slate-700">
-                        <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-lg bg-primary-600 flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">CP</span>
-                            </div>
-                            <span className="text-lg font-bold text-slate-50">ClinicPro</span>
-                        </div>
+                        <Link to="/" className="flex items-center gap-3">
+                            <Logo />
+                        </Link>
                         <button onClick={onClose} className="p-2 text-slate-400 hover:bg-slate-800 rounded-lg lg:hidden">
                             <X size={24} />
                         </button>

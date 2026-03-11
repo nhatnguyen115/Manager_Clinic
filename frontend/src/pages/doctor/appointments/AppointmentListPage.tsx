@@ -87,7 +87,7 @@ const AppointmentListPage = () => {
             if (!groups[date]) groups[date] = [];
             groups[date].push(apt);
         });
-        return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
+        return Object.entries(groups).sort(([a], [b]) => b.localeCompare(a)); // Newest date first
     }, [filtered]);
 
     const handleAction = async (appointment: AppointmentResponse, action: string) => {

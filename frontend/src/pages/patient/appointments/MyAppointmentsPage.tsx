@@ -248,13 +248,11 @@ const MyAppointmentsPage = () => {
         try {
             setIsLoading(true);
             const data = await getMyAppointments();
-            // Sort: upcoming first, then by date desc
+            // Sort: newest date first, then newest time first
             data.sort((a, b) => {
-                const aActive = ['PENDING', 'CONFIRMED'].includes(a.status);
-                const bActive = ['PENDING', 'CONFIRMED'].includes(b.status);
-                if (aActive && !bActive) return -1;
-                if (!aActive && bActive) return 1;
-                return b.appointmentDate.localeCompare(a.appointmentDate);
+                const dateDiff = b.appointmentDate.localeCompare(a.appointmentDate);
+                if (dateDiff !== 0) return dateDiff;
+                return (b.appointmentTime || '').localeCompare(a.appointmentTime || '');
             });
             setAppointments(data);
         } catch (error) {

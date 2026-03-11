@@ -35,6 +35,8 @@ public class VNPayService {
     private final VNPayConfig vnPayConfig;
     private final AppointmentRepository appointmentRepository;
     private final PaymentRepository paymentRepository;
+    private final EmailService emailService;
+    private final NotificationService notificationService;
 
     @Transactional
     public PaymentResponse createPaymentUrl(PaymentRequest request, String ipAddr) {
@@ -174,6 +176,9 @@ public class VNPayService {
 
                 // Create Invoice
                 invoiceService.createInvoiceFromPayment(payment);
+
+                // Send payment confirmation email
+                sendPaymentConfirmationEmail(payment);
             } else {
                 log.warn("Payment already marked as COMPLETED for TxnRef: {}", txnRef);
             }
@@ -221,6 +226,19 @@ public class VNPayService {
             if (!invoiceExists) {
                 invoiceService.createInvoiceFromPayment(payment);
                 log.info("Invoice created for payment {}", txnRef);
+
+                // Send payment confirmation email
+                sendPaymentConfirmationEmail(payment);
+
+                // Web Notification to Patient
+                notificationService.sendNotification(
+                        payment.getPatient().getUser(),
+                        "Thanh toán thành công",
+                        "Thanh toán cho lịch hẹn ngày " + payment.getAppointment().getAppointmentDate()
+                                + " qua VNPay đã thành công",
+                        com.clinic.entity.enums.NotificationType.PAYMENT,
+                        "PAYMENT",
+                        payment.getId());
             }
         } else {
             payment.setStatus(PaymentStatus.FAILED);
@@ -291,5 +309,25 @@ public class VNPayService {
                         : "N/A")
                 .appointmentDate(payment.getAppointment().getAppointmentDate())
                 .build();
+    }
+
+    private void sendPaymentConfirmationEmail(Payment payment) {
+        try {
+            java.util.Map<String, Object> variables = new java.util.HashMap<>();
+            variables.put("name", payment.getPatient().getUser().getFullName());
+            variables.put("invoiceNo",
+                    payment.getTransactionId() != null ? payment.getTransactionId() : payment.getId().toString());
+            variables.put("amount", String.format("%,.0f VND", payment.getAmount()));
+            variables.put("method", payment.getPaymentMethod().name());
+            variables.put("date", payment.getPaidAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+
+            emailService.sendHtmlEmail(
+                    payment.getPatient().getUser().getEmail(),
+                    "Xác nhận thanh toán thành công - ClinicPro",
+                    "payment-confirmation",
+                    variables);
+        } catch (Exception e) {
+            log.error("Failed to send payment confirmation email for payment {}", payment.getId(), e);
+        }
     }
 }

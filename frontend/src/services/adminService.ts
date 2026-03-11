@@ -173,6 +173,42 @@ const adminService = {
     getDoctorsNoSpecialty: async (): Promise<DoctorResponse[]> => {
         const response = await apiClient.get<ApiResponse<DoctorResponse[]>>('/admin/doctors/no-specialty');
         return response.data.result;
+    },
+
+    // Reports & Statistics
+    getSummaryReport: async (from?: string, to?: string): Promise<any> => {
+        const response = await apiClient.get<ApiResponse<any>>('/reports/summary', {
+            params: { from, to }
+        });
+        return response.data.result;
+    },
+
+    exportReportPdf: async (from?: string, to?: string): Promise<void> => {
+        const response = await apiClient.get('/reports/export/pdf', {
+            params: { from, to },
+            responseType: 'blob'
+        });
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `bao_cao_tong_quan_${new Date().toISOString().split('T')[0]}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    },
+
+    exportReportExcel: async (from?: string, to?: string): Promise<void> => {
+        const response = await apiClient.get('/reports/export/excel', {
+            params: { from, to },
+            responseType: 'blob'
+        });
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `bao_cao_tong_quan_${new Date().toISOString().split('T')[0]}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
     }
 };
 

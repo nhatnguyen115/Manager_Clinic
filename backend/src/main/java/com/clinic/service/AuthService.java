@@ -46,6 +46,7 @@ public class AuthService {
         private final PatientRepository patientRepository;
         private final DoctorRepository doctorRepository;
         private final AuditLogService auditLogService;
+        private final EmailService emailService;
 
         @Value("${app.jwt.refresh-expiration}")
         private long refreshExpiration;
@@ -83,6 +84,11 @@ public class AuthService {
 
                 auditLogService.log(user.getId(), "REGISTER", "USER", user.getId().toString());
                 log.info("User registered successfully: {}", user.getEmail());
+
+                // Send Welcome Email
+                java.util.Map<String, Object> variables = new java.util.HashMap<>();
+                variables.put("name", user.getFullName());
+                emailService.sendHtmlEmail(user.getEmail(), "Chào mừng bạn đến với ClinicPro", "welcome", variables);
         }
 
         @Transactional
@@ -187,9 +193,17 @@ public class AuthService {
 
                 passwordResetTokenRepository.save(resetToken);
 
-                // TODO: Send email
+                // Send email
+                String resetUrl = "http://localhost:5173/reset-password?token=" + token;
+                java.util.Map<String, Object> variables = new java.util.HashMap<>();
+                variables.put("name", user.getFullName());
+                variables.put("resetUrl", resetUrl);
+
+                emailService.sendHtmlEmail(user.getEmail(), "Đặt lại mật khẩu - ClinicPro", "password-reset",
+                                variables);
+
                 log.info("PASSWORD RESET TOKEN FOR {}: {}", user.getEmail(), token);
-                log.warn("Link: http://localhost:5173/reset-password?token={}", token);
+                log.warn("Link: {}", resetUrl);
         }
 
         @Transactional

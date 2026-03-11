@@ -7,6 +7,7 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\SpecialtyResponse
 D:\ManagerClinic\backend\src\main\java\com\clinic\config\SecurityConfig.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\ForgotPasswordRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\MedicalRecordService.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\controller\ReportController.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\AppointmentStatusRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\PatientService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\BaseEntity.java
@@ -23,14 +24,18 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\DoctorRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\AuditLog.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\AdminService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\Payment.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\util\ExcelExporter.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\util\PdfExporter.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\SpecialtyRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\controller\PaymentController.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\AdminUserRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\DoctorService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\security\jwt\JwtAuthenticationFilter.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\repository\NotificationRepository.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\SpecialtyService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\ReviewResponse.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\enums\RoleName.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\service\NotificationService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\controller\InvoiceController.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\controller\MedicalRecordController.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\Appointment.java
@@ -42,6 +47,8 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\service\AuditLogService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\AuthService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\PaymentRepository.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\controller\MedicineController.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\entity\Notification.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\scheduler\AppointmentReminderScheduler.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\ScheduleService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\ScheduleResponse.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\MedicineRepository.java
@@ -53,12 +60,15 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\AppointmentCancelR
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\Specialty.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\security\jwt\JwtTokenProvider.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\MedicineService.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\config\MailConfig.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\controller\PatientController.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\ReviewRepository.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\RoleRepository.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\SpecialtyRepository.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\controller\DoctorController.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\entity\enums\NotificationType.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\NewsRepository.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\service\EmailService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\ReviewRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\ProfileUpdateRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\PrescriptionDetailRequest.java
@@ -76,8 +86,10 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\MedicineResponse.
 D:\ManagerClinic\backend\src\main\java\com\clinic\security\AppointmentSecurity.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\MedicalRecord.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\WorkingScheduleRepository.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\controller\NotificationController.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\security\jwt\JwtAuthenticationEntryPoint.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\News.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\config\WebSocketConfig.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\enums\AppointmentStatus.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\security\annotation\RequireDoctor.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\ResetPasswordRequest.java
@@ -92,6 +104,7 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\repository\AppointmentReposito
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\ApiResponse.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\InvoiceService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\enums\PaymentMethod.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\security\WebSocketChannelInterceptor.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\WorkingSchedule.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\TimeSlotRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\controller\ReviewController.java
@@ -102,6 +115,7 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\repository\DoctorRepository.ja
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\RefreshTokenRepository.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\VNPayService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\AuditLogRepository.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\ReportResponse.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\PasswordResetToken.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\PrescriptionDetailResponse.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\Role.java
@@ -109,6 +123,7 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\security\UserDetailsServiceImp
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\CloudinaryService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\config\CloudinaryConfig.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\PrescriptionDetail.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\scheduler\ReminderScheduler.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\config\SwaggerConfig.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\PaymentResponse.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\security\annotation\RequirePatient.java
@@ -119,6 +134,7 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\entity\Invoice.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\exception\AppException.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\exception\GlobalExceptionHandler.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\controller\SpecialtyController.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\service\ReportService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\Prescription.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\InvoiceResponse.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\AuthResponse.java

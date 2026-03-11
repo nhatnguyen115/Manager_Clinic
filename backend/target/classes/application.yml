@@ -17,6 +17,21 @@ spring:
     serialization:
       write-dates-as-timestamps: false
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSSZ
+  
+  # Mail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: bimhuongday@gmail.com
+    password: iequ mpvi lfxa fkzk
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 # Server
 server:
@@ -58,9 +73,9 @@ app:
 
   
   cloudinary:
-    cloud-name: ${CLOUDINARY_CLOUD_NAME:dummy}
-    api-key: ${CLOUDINARY_API_KEY:dummy}
-    api-secret: ${CLOUDINARY_API_SECRET:dummy}
+    cloud-name: daowidkvr
+    api-key: 875313237441419
+    api-secret: DVbYgmSrugr3tCo04G-HT6gvdtg
 
 # Logging
 logging:

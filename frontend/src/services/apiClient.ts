@@ -25,7 +25,8 @@ apiClient.interceptors.response.use(
         const retryCount = parseInt(originalRequest.headers?.get?.('X-Retry-Count') || originalRequest.headers?.['X-Retry-Count'] || '0');
 
         // Handle 401 Unauthorized (Token expired)
-        if (error.response?.status === 401 && retryCount < 1) {
+        const isAuthRequest = originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/register');
+        if (error.response?.status === 401 && retryCount < 1 && !isAuthRequest) {
             console.log(`[Auth] 401 detected (Attempt ${retryCount + 1}), attempting token refresh...`, originalRequest.url);
 
             try {

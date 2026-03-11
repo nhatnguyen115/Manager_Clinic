@@ -33,6 +33,7 @@ public class MedicalRecordService {
         private final PrescriptionRepository prescriptionRepository;
         private final MedicineRepository medicineRepository;
         private final PatientRepository patientRepository;
+        private final NotificationService notificationService;
 
         @Transactional
         public MedicalRecordResponse createMedicalRecord(MedicalRecordRequest request) {
@@ -112,6 +113,17 @@ public class MedicalRecordService {
                 }
 
                 try {
+                        // Web Notification to Patient
+                        notificationService.sendNotification(
+                                        appointment.getPatient().getUser(),
+                                        "Có bệnh án mới",
+                                        "Bác sĩ " + appointment.getDoctor().getUser().getFullName()
+                                                        + " đã cập nhật bệnh án cho lịch hẹn ngày "
+                                                        + appointment.getAppointmentDate(),
+                                        com.clinic.entity.enums.NotificationType.APPOINTMENT,
+                                        "MEDICAL_RECORD",
+                                        record.getId());
+
                         return mapToResponse(record);
                 } catch (Exception e) {
                         log.error("Error mapping medical record to response: ", e);

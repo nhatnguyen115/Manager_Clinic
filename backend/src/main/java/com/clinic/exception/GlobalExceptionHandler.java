@@ -19,8 +19,10 @@ public class GlobalExceptionHandler {
 
     private static final String MIN_ATTRIBUTE = "min";
 
+    // Generic handler for other security-related authentication exceptions
     @ExceptionHandler(value = AuthenticationException.class)
     ResponseEntity<ApiResponse<?>> handlingAuthenticationException(AuthenticationException exception) {
+        log.warn("AuthenticationException caught: {}", exception.getMessage());
         ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
 
         // Specific handling for locked/disabled accounts

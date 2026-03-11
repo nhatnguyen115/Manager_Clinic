@@ -53,10 +53,14 @@ const CardContent = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) =>
     <div className={cn('px-6 py-4', className)} {...props} />
 );
 
+const CardTitle = ({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
+    <h3 className={cn('text-lg font-semibold text-slate-50', className)} {...props} />
+);
+
 const CardFooter = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
     <div className={cn('px-6 py-4 border-t border-slate-700 bg-slate-950/30 font-medium', className)} {...props} />
 );
 
 Card.displayName = 'Card';
 
-export { Card, CardHeader, CardContent, CardFooter };
+export { Card, CardHeader, CardTitle, CardContent, CardFooter };

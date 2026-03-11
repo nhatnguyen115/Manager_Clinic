@@ -1,8 +1,10 @@
+com\clinic\entity\enums\NotificationType.class
 com\clinic\service\SpecialtyService.class
 com\clinic\repository\MedicineRepository.class
 com\clinic\dto\request\ReviewRequest$ReviewRequestBuilder.class
 com\clinic\service\AppointmentService.class
 com\clinic\dto\request\PrescriptionDetailRequest.class
+com\clinic\entity\Notification.class
 com\clinic\entity\Review.class
 com\clinic\dto\response\MedicalRecordResponse$PrescriptionResponse$PrescriptionResponseBuilder.class
 com\clinic\repository\PasswordResetTokenRepository.class
@@ -13,6 +15,7 @@ com\clinic\entity\Payment.class
 com\clinic\dto\response\DoctorResponse.class
 com\clinic\entity\Payment$PaymentBuilder.class
 com\clinic\dto\request\AppointmentStatusRequest$AppointmentStatusRequestBuilder.class
+com\clinic\service\EmailService.class
 com\clinic\controller\ReviewController.class
 com\clinic\dto\response\MedicalRecordResponse.class
 com\clinic\entity\WorkingSchedule.class
@@ -38,6 +41,7 @@ com\clinic\dto\request\ScheduleUpdateRequest$ScheduleUpdateRequestBuilder.class
 com\clinic\dto\response\MedicalRecordResponse$MedicalRecordResponseBuilder.class
 com\clinic\dto\response\MedicalRecordResponse$PrescriptionResponse.class
 com\clinic\repository\TimeSlotRepository.class
+com\clinic\controller\NotificationController.class
 com\clinic\dto\request\PatientRequest$PatientRequestBuilder.class
 com\clinic\dto\request\MedicalRecordRequest.class
 com\clinic\controller\UserController.class
@@ -97,6 +101,7 @@ com\clinic\entity\PasswordResetToken.class
 com\clinic\entity\Role$RoleBuilder.class
 com\clinic\dto\response\DashboardStatsResponse$PaymentStats.class
 com\clinic\security\jwt\JwtTokenProvider.class
+com\clinic\service\NotificationService.class
 com\clinic\service\CloudinaryService.class
 com\clinic\repository\RefreshTokenRepository.class
 com\clinic\dto\response\DashboardStatsResponse$PaymentStats$PaymentStatsBuilder.class
@@ -111,6 +116,7 @@ com\clinic\controller\MedicineController.class
 com\clinic\dto\request\ProfileUpdateRequest.class
 com\clinic\service\ScheduleService.class
 com\clinic\dto\response\DashboardStatsResponse$MonthlyStatItem.class
+com\clinic\config\MailConfig.class
 com\clinic\dto\response\AuthResponse.class
 com\clinic\dto\response\UserResponse.class
 com\clinic\dto\response\DashboardStatsResponse$RecentActivityItem$RecentActivityItemBuilder.class
@@ -141,6 +147,7 @@ com\clinic\entity\Review$ReviewBuilder.class
 com\clinic\security\annotation\RequireAdmin.class
 com\clinic\dto\request\PatientRequest.class
 com\clinic\controller\PaymentController.class
+com\clinic\entity\Notification$NotificationBuilder.class
 com\clinic\dto\request\ReviewRequest.class
 com\clinic\dto\response\MedicineResponse.class
 com\clinic\service\MedicalRecordService.class
@@ -165,6 +172,8 @@ com\clinic\entity\enums\PaymentStatus.class
 com\clinic\dto\request\MedicineRequest.class
 com\clinic\dto\request\ResetPasswordRequest.class
 com\clinic\service\ReviewService.class
+com\clinic\scheduler\AppointmentReminderScheduler.class
+com\clinic\repository\NotificationRepository.class
 com\clinic\dto\request\RegisterRequest.class
 com\clinic\entity\AuditLog$AuditLogBuilder.class
 com\clinic\dto\request\ForgotPasswordRequest$ForgotPasswordRequestBuilder.class

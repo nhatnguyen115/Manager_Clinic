@@ -45,6 +45,7 @@ const AdminPatientListPage = lazy(() => import('@pages/admin/patients/PatientsLi
 const AdminSpecialtyListPage = lazy(() => import('@pages/admin/specialties/SpecialtiesListPage'));
 const AdminAppointmentListPage = lazy(() => import('@pages/admin/appointments/AppointmentListPage'));
 const AdminInvoicesListPage = lazy(() => import('@pages/admin/invoices/InvoicesListPage'));
+const AdminReportsPage = lazy(() => import('@pages/admin/reports/ReportsDashboardPage'));
 
 export const AppRouter = () => {
 
@@ -109,6 +110,7 @@ export const AppRouter = () => {
                                     <Route path="specialties" element={<AdminSpecialtyListPage />} />
                                     <Route path="appointments" element={<AdminAppointmentListPage />} />
                                     <Route path="invoices" element={<AdminInvoicesListPage />} />
+                                    <Route path="reports" element={<AdminReportsPage />} />
                                 </Routes>
 
                             </MainLayout>

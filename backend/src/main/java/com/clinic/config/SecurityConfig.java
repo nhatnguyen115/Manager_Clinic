@@ -30,7 +30,6 @@ public class SecurityConfig {
             "/api/doctors/**",
             "/api/specialties",
             "/api/specialties/**",
-            "/api/appointments/**",
             "/api/appointments/available-slots",
             "/api/medicines",
             "/api/payments/vnpay-callback",
@@ -38,6 +37,9 @@ public class SecurityConfig {
             // Health check
             "/api/health",
             "/actuator/health",
+
+            // WebSocket
+            "/ws-clinic/**",
 
             // Swagger / OpenAPI
             "/swagger-ui/**",

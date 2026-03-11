@@ -44,9 +44,9 @@ const PatientListPage = () => {
         if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
             result = result.filter(p =>
-                p.fullName.toLowerCase().includes(q) ||
-                p.phoneNumber?.includes(q) ||
-                p.email.toLowerCase().includes(q)
+                (p.fullName?.toLowerCase() || '').includes(q) ||
+                (p.phoneNumber || '').includes(q) ||
+                (p.email?.toLowerCase() || '').includes(q)
             );
         }
 
@@ -151,7 +151,7 @@ const PatientListPage = () => {
                         {filteredPatients.map(patient => (
                             <Link
                                 key={patient.id}
-                                to={`/doctor/patients/${patient.id}`}
+                                to={`/doctor/patients/${patient.id}/history`}
                                 className="block group"
                             >
                                 <Card className="h-full border-slate-700/50 bg-slate-900/40 hover:bg-slate-800/60 transition-all duration-300 group-hover:border-primary-700/40 group-hover:shadow-2xl group-hover:shadow-primary-900/20 active:scale-[0.98] overflow-hidden">
@@ -162,7 +162,7 @@ const PatientListPage = () => {
                                             <div className="relative flex-shrink-0">
                                                 <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center shadow-lg group-hover:rotate-3 transition-transform duration-500">
                                                     <span className="text-xl font-black text-white">
-                                                        {patient.fullName.charAt(0)}
+                                                        {patient.fullName ? patient.fullName.charAt(0) : '?'}
                                                     </span>
                                                 </div>
                                                 <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-slate-900 border-2 border-slate-900 flex items-center justify-center">
