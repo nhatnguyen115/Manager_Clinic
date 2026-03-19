@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
     User, Phone, Shield, Save, Loader2,
-    MapPin, CreditCard, CheckCircle2
+    MapPin, CreditCard, CheckCircle2, Camera
 } from 'lucide-react';
 import { Card, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
@@ -11,7 +11,7 @@ import { Textarea } from '@components/ui/Textarea';
 import { useAuth } from '@contexts/AuthContext';
 import { useToast } from '@hooks/useToast';
 import { Avatar } from '@components/ui/Avatar';
-import { getMyProfile, updateMyProfile, getAllSpecialties } from '@services/patientService';
+import { getMyProfile, updateMyProfile, getAllSpecialties, uploadAvatar } from '@services/patientService';
 import type { Gender, SpecialtyResponse } from '@/types';
 
 // ─── Completion Progress Component ──────────────────────
@@ -41,7 +41,7 @@ const ProfileCompletion = ({ percentage }: { percentage: number }) => {
 };
 
 const ProfilePage = () => {
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
     const { showToast } = useToast();
 
     const [formData, setFormData] = useState({
@@ -72,6 +72,9 @@ const ProfilePage = () => {
     const [specialties, setSpecialties] = useState<SpecialtyResponse[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
+    const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Calculate completion percentage
     const calculateCompletion = () => {
@@ -104,6 +107,7 @@ const ProfilePage = () => {
 
                 setSpecialties(specialtiesList);
 
+                setAvatarUrl(profile.avatarUrl || undefined);
                 setFormData({
                     fullName: profile.fullName || '',
                     email: profile.email || '',
@@ -135,6 +139,47 @@ const ProfilePage = () => {
         };
         load();
     }, []);
+
+    const handleAvatarClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleAvatarFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validate: only image, max 5MB
+        if (!file.type.startsWith('image/')) {
+            showToast.error('Vui lòng chọn file ảnh (jpg, png, webp...).');
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            showToast.error('Ảnh quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB.');
+            return;
+        }
+
+        // Show preview immediately
+        const objectUrl = URL.createObjectURL(file);
+        setAvatarUrl(objectUrl);
+
+        try {
+            setIsUploadingAvatar(true);
+            showToast.loading('Đang tải ảnh lên...');
+            const newUrl = await uploadAvatar(file);
+            setAvatarUrl(newUrl);
+            updateUser({ avatarUrl: newUrl });
+            showToast.success('Cập nhật ảnh đại diện thành công!');
+        } catch (error: any) {
+            const msg = error?.response?.data?.message || 'Tải ảnh thất bại. Vui lòng thử lại.';
+            showToast.error(msg);
+            // Revert preview on error
+            setAvatarUrl(undefined);
+        } finally {
+            setIsUploadingAvatar(false);
+            // Reset input so same file can be selected again
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
 
     const handleSave = async () => {
         try {
@@ -230,15 +275,31 @@ const ProfilePage = () => {
                 <div className="space-y-6">
                     <Card>
                         <CardContent className="pt-8 flex flex-col items-center text-center">
-                            <div className="relative group">
+                            <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
                                 <Avatar
+                                    src={avatarUrl}
                                     size="xxl"
                                     fallback={formData.fullName.split(' ').map(n => n[0]).join('')}
                                     className="rounded-3xl border-4 border-slate-700/50 shadow-2xl"
                                 />
-                                <button className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl flex items-center justify-center text-white text-sm font-medium cursor-pointer">
-                                    Thay đổi ảnh
-                                </button>
+                                <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-all duration-200 rounded-3xl flex flex-col items-center justify-center gap-1.5">
+                                    {isUploadingAvatar ? (
+                                        <Loader2 size={24} className="animate-spin text-white" />
+                                    ) : (
+                                        <>
+                                            <Camera size={22} className="text-white" />
+                                            <span className="text-white text-xs font-medium">Thay đổi ảnh</span>
+                                        </>
+                                    )}
+                                </div>
+                                {/* Hidden file input */}
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleAvatarFileChange}
+                                />
                             </div>
                             <h2 className="mt-6 text-xl font-semibold text-slate-50">{formData.fullName}</h2>
                             <p className="text-slate-400 text-sm mt-1 flex items-center gap-1.5 capitalize">

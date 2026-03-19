@@ -60,7 +60,7 @@ export const Header = ({ onMenuClick }: { onMenuClick?: () => void }) => {
                                 <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">{user?.role?.toLowerCase() || ''}</p>
                             </div>
                             <div className="relative">
-                                <Avatar fallback={user?.fullName?.charAt(0) || 'U'} size="sm" />
+                                <Avatar src={user?.avatarUrl} fallback={user?.fullName?.charAt(0) || 'U'} size="sm" />
                                 <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-emerald-500 border-2 border-slate-950 rounded-full" />
                             </div>
                             <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />

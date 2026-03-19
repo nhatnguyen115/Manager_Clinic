@@ -94,6 +94,15 @@ export const updateMyProfile = async (data: ProfileUpdateRequest): Promise<UserP
     return response.data.result;
 };
 
+export const uploadAvatar = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await apiClient.post('/users/me/avatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data.result;
+};
+
 // ─── Patient Profile (Detailed) ───
 
 export const getPatientById = async (id: string): Promise<PatientResponse> => {

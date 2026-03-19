@@ -3,6 +3,10 @@ spring:
     name: ClinicPro
   profiles:
     active: dev
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   
   # JPA / Hibernate
   jpa:
@@ -76,6 +80,13 @@ app:
     cloud-name: daowidkvr
     api-key: 875313237441419
     api-secret: DVbYgmSrugr3tCo04G-HT6gvdtg
+
+  gemini:
+    api-key: AIzaSyARi28h2V5NUe-ah_pWlQvnOorXsRzjfx8
+    model: gemini-2.0-flash-lite
+    base-url: https://generativelanguage.googleapis.com/v1beta
+    timeout: 30
+    max-tokens: 2048
 
 # Logging
 logging:

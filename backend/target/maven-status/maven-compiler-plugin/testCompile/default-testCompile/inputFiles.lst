@@ -8,8 +8,10 @@ D:\ManagerClinic\backend\src\test\java\com\clinic\controller\SpecialtyController
 D:\ManagerClinic\backend\src\test\java\com\clinic\service\DoctorServiceTest.java
 D:\ManagerClinic\backend\src\test\java\com\clinic\service\SpecialtyServiceTest.java
 D:\ManagerClinic\backend\src\test\java\com\clinic\security\jwt\JwtTokenProviderTest.java
+D:\ManagerClinic\backend\src\test\java\com\clinic\service\ChatServiceTest.java
 D:\ManagerClinic\backend\src\test\java\com\clinic\controller\PatientControllerIT.java
 D:\ManagerClinic\backend\src\test\java\com\clinic\controller\AdminControllerIT.java
+D:\ManagerClinic\backend\src\test\java\com\clinic\service\ChatFunctionServiceTest.java
 D:\ManagerClinic\backend\src\test\java\com\clinic\controller\ReviewControllerIT.java
 D:\ManagerClinic\backend\src\test\java\com\clinic\service\AdminServiceTest.java
 D:\ManagerClinic\backend\src\test\java\com\clinic\ClinicApplicationTests.java

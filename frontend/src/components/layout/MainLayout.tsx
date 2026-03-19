@@ -1,6 +1,7 @@
 import { useState, ReactNode } from 'react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
+import { ChatWidget } from '../chat/ChatWidget';
 
 export const MainLayout = ({ children }: { children: ReactNode }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -18,6 +19,9 @@ export const MainLayout = ({ children }: { children: ReactNode }) => {
                     </div>
                 </main>
             </div>
+
+            {/* AI Chatbot Widget */}
+            <ChatWidget />
         </div>
     );
 };

@@ -89,6 +89,7 @@ public class SecurityConfig {
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_URLS).permitAll()
+                        .requestMatchers("/api/chat/**").authenticated() // AI Chatbot needs authentication
                         .anyRequest().authenticated());
 
         // Add JWT Filter

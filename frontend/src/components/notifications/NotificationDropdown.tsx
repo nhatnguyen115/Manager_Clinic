@@ -3,10 +3,13 @@ import { Bell, Check, Calendar, CreditCard, Info, Clock } from 'lucide-react';
 import { formatRelativeTime } from '@/utils/dateUtils';
 import { useNotifications } from '@/hooks/useNotifications';
 import { NotificationType } from '@/types';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const NotificationDropdown = () => {
     const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -27,6 +30,28 @@ export const NotificationDropdown = () => {
             case 'REMINDER': return <Clock className="text-amber-500" size={18} />;
             case 'SYSTEM': return <Info className="text-slate-400" size={18} />;
             default: return <Bell size={18} />;
+        }
+    };
+
+    const handleNotificationClick = (notification: any) => {
+        if (!notification.isRead) {
+            markAsRead(notification.id);
+        }
+        
+        setIsOpen(false);
+
+        if (notification.relatedEntityType === 'APPOINTMENT' && notification.relatedEntityId) {
+            if (user?.role === 'PATIENT') {
+                navigate(`/appointments/${notification.relatedEntityId}`);
+            } else if (user?.role === 'DOCTOR') {
+                navigate(`/doctor/appointments`);
+            } else if (user?.role === 'ADMIN') {
+                navigate(`/admin/appointments`);
+            }
+        } else if (notification.relatedEntityType === 'PAYMENT' && notification.relatedEntityId) {
+            if (user?.role === 'PATIENT') {
+                navigate(`/payment/history`);
+            }
         }
     };
 
@@ -73,7 +98,7 @@ export const NotificationDropdown = () => {
                                     <div
                                         key={notification.id}
                                         className={`group relative p-4 hover:bg-slate-800/50 transition-colors cursor-pointer ${!notification.isRead ? 'bg-primary-900/5' : ''}`}
-                                        onClick={() => !notification.isRead && markAsRead(notification.id)}
+                                        onClick={() => handleNotificationClick(notification)}
                                     >
                                         <div className="flex gap-4">
                                             <div className="flex-shrink-0 mt-1 h-9 w-9 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 group-hover:border-slate-600 transition-colors">

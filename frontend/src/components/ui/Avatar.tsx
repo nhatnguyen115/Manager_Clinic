@@ -38,7 +38,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     <img
                         src={src}
                         alt={alt || 'Avatar'}
-                        className="h-full w-full object-cover"
+                        className="absolute inset-0 z-10 h-full w-full object-cover"
                         onError={(e) => {
                             (e.target as HTMLImageElement).style.display = 'none';
                         }}
@@ -46,7 +46,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                 ) : null}
 
                 {/* Fallback initials if image fails or no src */}
-                <div className="flex h-full w-full items-center justify-center font-semibold uppercase text-slate-300 bg-slate-800">
+                <div className="absolute inset-0 flex h-full w-full items-center justify-center font-semibold uppercase text-slate-300 bg-slate-800">
                     {fallback?.substring(0, 2) || (alt?.substring(0, 1) || '?')}
                 </div>
             </div>

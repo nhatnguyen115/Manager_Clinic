@@ -20,6 +20,7 @@ const BookingSuccessPage = lazy(() => import('@pages/patient/appointments/Bookin
 const MedicalHistoryPage = lazy(() => import('@pages/patient/medical-history/MedicalHistoryPage'));
 const RecordDetailPage = lazy(() => import('@pages/patient/medical-history/RecordDetailPage'));
 const ProfilePage = lazy(() => import('@pages/patient/ProfilePage'));
+const NotificationsPage = lazy(() => import('@pages/notifications/NotificationsPage'));
 const MyAppointmentsPage = lazy(() => import('@pages/patient/appointments/MyAppointmentsPage'));
 const AppointmentDetailPage = lazy(() => import('@pages/patient/appointments/AppointmentDetailPage'));
 const CheckoutPage = lazy(() => import('@pages/payment/CheckoutPage'));
@@ -121,6 +122,7 @@ export const AppRouter = () => {
                 {/* Shared Protected Routes */}
                 <Route element={<ProtectedRoute roles={['PATIENT', 'DOCTOR', 'ADMIN']} />}>
                     <Route path="/profile" element={<MainLayout><ProfilePage /></MainLayout>} />
+                    <Route path="/notifications" element={<MainLayout><NotificationsPage /></MainLayout>} />
                 </Route>
 
                 <Route path="/forbidden" element={<ForbiddenPage />} />
