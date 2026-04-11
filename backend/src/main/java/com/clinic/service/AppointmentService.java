@@ -316,7 +316,8 @@ public class AppointmentService {
                                 .confirmedAt(appointment.getConfirmedAt())
                                 .completedAt(appointment.getCompletedAt())
                                 .createdAt(appointment.getCreatedAt())
-                                .updatedAt(appointment.getUpdatedAt());
+                                .updatedAt(appointment.getUpdatedAt())
+                                .actualFee(appointment.getActualFee());
 
                 if (appointment.getPatient() != null) {
                         builder.patientId(appointment.getPatient().getId());

@@ -43,11 +43,11 @@ const statusConfig: Record<AppointmentStatus, {
         icon: <CheckCircle2 size={16} />,
         description: 'Lịch hẹn đã được xác nhận. Vui lòng đến đúng giờ.',
     },
-    COMPLETED: {
+            COMPLETED: {
         label: 'Hoàn thành',
         variant: 'success',
         icon: <CheckCircle2 size={16} />,
-        description: 'Bạn đã khám xong. Xem bệnh án để biết kết quả.',
+        description: 'Bạn đã khám xong. Xem bệnh án và thanh toán khi bác sĩ đã cập nhật chi phí.',
     },
     CANCELLED: {
         label: 'Đã hủy',
@@ -75,13 +75,13 @@ const InfoRow = ({
 }) => {
     if (!value) return null;
     return (
-        <div className="flex items-start gap-3 py-3 border-b border-slate-800/50 last:border-0">
-            <div className="flex-shrink-0 w-9 h-9 bg-slate-800/60 rounded-lg flex items-center justify-center text-slate-400 mt-0.5">
+        <div className="flex items-start gap-3 py-3 border-b border-dark-800/50 last:border-0">
+            <div className="flex-shrink-0 w-9 h-9 bg-dark-800/60 rounded-lg flex items-center justify-center text-dark-400 mt-0.5">
                 {icon}
             </div>
             <div className="min-w-0">
-                <p className="text-xs text-slate-500 uppercase tracking-wide font-medium">{label}</p>
-                <p className="text-slate-100 font-medium mt-0.5">{value}</p>
+                <p className="text-xs text-dark-500 uppercase tracking-wide font-medium">{label}</p>
+                <p className="text-dark-100 font-medium mt-0.5">{value}</p>
             </div>
         </div>
     );
@@ -107,30 +107,30 @@ const CancelModal = ({ onClose, onConfirm }: CancelModalProps) => {
         <>
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={onClose} />
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-md">
-                    <div className="flex items-center justify-between p-6 border-b border-slate-700">
-                        <h3 className="text-lg font-bold text-slate-50">Hủy lịch hẹn</h3>
+                <div className="bg-dark-900 border border-dark-700 rounded-2xl shadow-2xl w-full max-w-md">
+                    <div className="flex items-center justify-between p-6 border-b border-dark-700">
+                        <h3 className="text-lg font-bold text-dark-50">Hủy lịch hẹn</h3>
                         <button
                             onClick={onClose}
-                            className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-slate-50 transition-colors"
+                            className="p-2 rounded-lg hover:bg-dark-800 text-dark-400 hover:text-dark-50 transition-colors"
                         >
                             <X size={20} />
                         </button>
                     </div>
                     <div className="p-6 space-y-4">
-                        <p className="text-slate-300 text-sm">
+                        <p className="text-dark-300 text-sm">
                             Bạn có chắc muốn hủy lịch hẹn này? Hành động này không thể hoàn tác.
                         </p>
                         <div>
-                            <label className="block text-sm font-medium text-slate-300 mb-2">
-                                Lý do hủy <span className="text-slate-500">(không bắt buộc)</span>
+                            <label className="block text-sm font-medium text-dark-300 mb-2">
+                                Lý do hủy <span className="text-dark-500">(không bắt buộc)</span>
                             </label>
                             <textarea
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}
                                 placeholder="Ví dụ: Bận công việc đột xuất..."
                                 rows={3}
-                                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-50 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 resize-none text-sm"
+                                className="w-full bg-dark-800 border border-dark-700 rounded-xl px-4 py-3 text-dark-50 placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 resize-none text-sm"
                             />
                         </div>
                     </div>
@@ -219,7 +219,7 @@ const AppointmentDetailPage = () => {
             {/* Back navigation */}
             <div className="flex items-center gap-2">
                 <Link to="/appointments">
-                    <Button variant="ghost" size="sm" className="text-slate-400 hover:text-slate-50 -ml-2">
+                    <Button variant="ghost" size="sm" className="text-dark-400 hover:text-dark-50 -ml-2">
                         <ChevronLeft size={18} className="mr-1" /> Lịch hẹn của tôi
                     </Button>
                 </Link>
@@ -243,7 +243,7 @@ const AppointmentDetailPage = () => {
                 </div>
                 <div>
                     <Badge variant={cfg.variant}>{cfg.label}</Badge>
-                    <p className="text-sm text-slate-400 mt-1">{cfg.description}</p>
+                    <p className="text-sm text-dark-400 mt-1">{cfg.description}</p>
                 </div>
             </div>
 
@@ -253,11 +253,11 @@ const AppointmentDetailPage = () => {
                     title="Chi tiết lịch hẹn"
                     icon={<Stethoscope size={18} />}
                 />
-                <CardContent className="divide-y divide-slate-800/50">
+                <CardContent className="divide-y divide-dark-800/50">
                     <InfoRow
                         icon={<User size={16} />}
                         label="Bác sĩ"
-                        value={`BS. ${appointment.doctorName}`}
+                        value={`${appointment.doctorName}`}
                     />
                     <InfoRow
                         icon={<Stethoscope size={16} />}
@@ -306,8 +306,8 @@ const AppointmentDetailPage = () => {
                         <div className="flex items-center gap-3">
                             <div className="w-2 h-2 rounded-full bg-primary-500 flex-shrink-0" />
                             <div className="flex-1 flex items-center justify-between">
-                                <span className="text-sm text-slate-200">Đã đặt lịch</span>
-                                <span className="text-xs text-slate-500">
+                                <span className="text-sm text-dark-200">Đã đặt lịch</span>
+                                <span className="text-xs text-dark-500">
                                     {new Date(appointment.createdAt).toLocaleDateString('vi-VN')}
                                 </span>
                             </div>
@@ -316,8 +316,8 @@ const AppointmentDetailPage = () => {
                             <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 rounded-full bg-primary-400 flex-shrink-0" />
                                 <div className="flex-1 flex items-center justify-between">
-                                    <span className="text-sm text-slate-200">Đã xác nhận</span>
-                                    <span className="text-xs text-slate-500">
+                                    <span className="text-sm text-dark-200">Đã xác nhận</span>
+                                    <span className="text-xs text-dark-500">
                                         {new Date(appointment.confirmedAt).toLocaleDateString('vi-VN')}
                                     </span>
                                 </div>
@@ -327,8 +327,8 @@ const AppointmentDetailPage = () => {
                             <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />
                                 <div className="flex-1 flex items-center justify-between">
-                                    <span className="text-sm text-slate-200">Hoàn thành khám</span>
-                                    <span className="text-xs text-slate-500">
+                                    <span className="text-sm text-dark-200">Hoàn thành khám</span>
+                                    <span className="text-xs text-dark-500">
                                         {new Date(appointment.completedAt).toLocaleDateString('vi-VN')}
                                     </span>
                                 </div>
@@ -341,18 +341,24 @@ const AppointmentDetailPage = () => {
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-3">
                 {appointment.status === 'COMPLETED' && (
-                    <Link to="/medical-history" className="flex-1">
-                        <Button fullWidth variant="outline" className="border-emerald-700/50 text-emerald-400 hover:bg-emerald-900/20">
-                            <ClipboardList size={16} className="mr-2" /> Xem bệnh án
-                        </Button>
-                    </Link>
-                )}
-                {appointment.status === 'CONFIRMED' && (
-                    <Link to={`/checkout/${appointment.id}`} className="flex-1">
-                        <Button fullWidth className="bg-primary-600 hover:bg-primary-500 text-white shadow-lg shadow-primary-900/20">
-                            <CreditCard size={16} className="mr-2" /> Thanh toán ngay
-                        </Button>
-                    </Link>
+                    <>
+                        <Link to="/medical-history" className="flex-1">
+                            <Button fullWidth variant="outline" className="border-emerald-700/50 text-emerald-400 hover:bg-emerald-900/20">
+                                <ClipboardList size={16} className="mr-2" /> Xem bệnh án
+                            </Button>
+                        </Link>
+                        {appointment.actualFee ? (
+                            <Link to={`/checkout/${appointment.id}`} className="flex-1">
+                                <Button fullWidth className="bg-primary-600 hover:bg-primary-500 text-white shadow-lg shadow-primary-900/20">
+                                    <CreditCard size={16} className="mr-2" /> Thanh toán {appointment.actualFee.toLocaleString('vi-VN')} đ
+                                </Button>
+                            </Link>
+                        ) : (
+                            <Button fullWidth disabled className="flex-1">
+                                <CreditCard size={16} className="mr-2" /> Chờ bác sĩ cập nhật chi phí
+                            </Button>
+                        )}
+                    </>
                 )}
                 <Link to="/booking/specialty" className="flex-1">
 

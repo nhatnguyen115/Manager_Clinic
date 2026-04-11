@@ -112,10 +112,6 @@ const ConfirmBookingPage = () => {
         return <div className="text-center py-20 text-slate-400">Trạng thái đặt lịch không hợp lệ hoặc thông tin bác sĩ không có sẵn.</div>;
     }
 
-    const formattedFee = doctor?.consultationFee
-        ? new Intl.NumberFormat('vi-VN').format(doctor.consultationFee) + ' VND'
-        : 'Miễn phí';
-
     return (
         <div className="max-w-7xl mx-auto space-y-12 animate-fade-in pb-20 px-4 sm:px-0">
             <BookingStepper currentStep={4} />
@@ -150,7 +146,7 @@ const ConfirmBookingPage = () => {
                                 {/* Doctor Info */}
                                 <div className="flex gap-4 p-4 bg-slate-800/40 rounded-2xl border border-slate-700/30">
                                     <Avatar
-                                        src={doctor?.avatar}
+                                        src={doctor?.avatarUrl}
                                         fallback={doctor?.fullName[0] || 'D'}
                                         size="xl"
                                         className="rounded-2xl shrink-0"
@@ -225,24 +221,24 @@ const ConfirmBookingPage = () => {
                         <div className="p-8 space-y-8">
                             <h3 className="text-xl font-bold text-slate-50 flex items-center gap-2">
                                 <ShieldCheck size={24} className="text-primary-500" />
-                                Chi tiết thanh toán
+                                Thông tin thanh toán
                             </h3>
 
                             <div className="space-y-4 pt-4 border-t border-slate-800/50">
                                 <div className="flex justify-between text-slate-400">
-                                    <span>Phí khám bệnh</span>
-                                    <span className="text-slate-100 font-medium">{formattedFee}</span>
+                                    <span>Chi phí khám</span>
+                                    <span className="text-slate-100 font-medium">Bác sĩ sẽ cập nhật sau khi khám</span>
                                 </div>
                                 <div className="flex justify-between text-slate-400">
-                                    <span>Phí dịch vụ</span>
-                                    <span className="text-slate-100 font-medium text-green-500">Miễn phí</span>
+                                    <span>Thanh toán</span>
+                                    <span className="text-slate-100 font-medium text-green-500">Thực hiện sau khi có bệnh án</span>
                                 </div>
 
                                 <div className="pt-6 border-t border-slate-800 flex justify-between items-end">
-                                    <span className="text-slate-100 font-bold">Tổng thanh toán</span>
+                                    <span className="text-slate-100 font-bold">Trạng thái phí khám</span>
                                     <div className="text-right">
-                                        <p className="text-3xl font-black text-primary-400 tracking-tighter">{formattedFee}</p>
-                                        <p className="text-[10px] text-slate-500 italic mt-1">(Trả trực tiếp tại cơ sở)</p>
+                                        <p className="text-xl font-black text-primary-400 tracking-tighter">Chưa chốt</p>
+                                        <p className="text-[10px] text-slate-500 italic mt-1">(Bệnh nhân chỉ thanh toán sau khi bác sĩ khám xong)</p>
                                     </div>
                                 </div>
                             </div>

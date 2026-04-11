@@ -32,6 +32,7 @@ interface MedicalRecordData {
     treatment: string;
     notes: string;
     followUpDate: string;
+    actualFee: string | number;
     prescriptionNotes: string;
     prescriptionDetails: PrescriptionItem[];
 }
@@ -44,6 +45,7 @@ interface EditRecord {
     treatment: string;
     notes: string;
     followUpDate?: string;
+    actualFee?: number;
     prescription?: {
         notes: string;
         details: {
@@ -61,7 +63,7 @@ interface EditRecord {
 interface Props {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (data: MedicalRecordData) => void;
+    onSave: (data: any) => void | Promise<void>;
     editData?: EditRecord | null;
     patientName: string;
 }
@@ -93,6 +95,7 @@ const MedicalRecordFormModal = ({ isOpen, onClose, onSave, editData, patientName
             treatment: editData?.treatment || '',
             notes: editData?.notes || '',
             followUpDate: editData?.followUpDate || '',
+            actualFee: editData?.actualFee ? String(editData.actualFee) : '',
             prescriptionNotes: editData?.prescription?.notes || '',
             prescriptionDetails: editData?.prescription?.details.map(d => ({
                 medicineId: d.id, medicineName: d.medicineName, dosage: d.dosage,
@@ -140,6 +143,7 @@ const MedicalRecordFormModal = ({ isOpen, onClose, onSave, editData, patientName
                 diagnosis: editData.diagnosis, symptoms: editData.symptoms,
                 vitalSigns: parsedVitals, treatment: editData.treatment,
                 notes: editData.notes, followUpDate: editData.followUpDate || '',
+                actualFee: editData.actualFee ? String(editData.actualFee) : '',
                 prescriptionNotes: editData.prescription?.notes || '',
                 prescriptionDetails: editData.prescription?.details.map(d => ({
                     medicineId: d.id, medicineName: d.medicineName, dosage: d.dosage,
@@ -192,7 +196,13 @@ const MedicalRecordFormModal = ({ isOpen, onClose, onSave, editData, patientName
         }));
     };
 
-    const isFormValid = formData.diagnosis.trim() && formData.symptoms.trim();
+    const actualFeeValue = Number(formData.actualFee);
+    const isFormValid = Boolean(
+        formData.diagnosis.trim() &&
+        formData.symptoms.trim() &&
+        Number.isFinite(actualFeeValue) &&
+        actualFeeValue > 0
+    );
 
     const handleSubmit = () => {
         if (!isFormValid) return;
@@ -203,6 +213,7 @@ const MedicalRecordFormModal = ({ isOpen, onClose, onSave, editData, patientName
             treatment: formData.treatment?.trim() || null,
             notes: formData.notes?.trim() || null,
             followUpDate: formData.followUpDate || null,
+            actualFee: actualFeeValue,
             prescriptionDetails: formData.prescriptionDetails.map(p => ({
                 ...p,
                 duration: p.duration?.trim() || null,
@@ -257,7 +268,7 @@ const MedicalRecordFormModal = ({ isOpen, onClose, onSave, editData, patientName
 
                 {/* Footer */}
                 <div className="flex items-center justify-between p-5 border-t border-slate-700 flex-shrink-0">
-                    <div>{!isFormValid && <span className="text-xs text-amber-400 flex items-center gap-1"><AlertCircle size={12} /> Cần nhập chẩn đoán và triệu chứng</span>}</div>
+                    <div>{!isFormValid && <span className="text-xs text-amber-400 flex items-center gap-1"><AlertCircle size={12} /> Cần nhập chẩn đoán, triệu chứng và chi phí khám</span>}</div>
                     <div className="flex items-center gap-2">
                         <Button variant="ghost" onClick={onClose}>Hủy</Button>
                         <Button className="bg-primary-600 hover:bg-primary-500" onClick={handleSubmit} disabled={!isFormValid}>
@@ -386,9 +397,38 @@ const FormView = ({ formData, updateField, updateVitalSign, medicineSearch, setM
                 </div>
             )}
 
-            <div>
+            <div className="mt-4">
                 <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Ghi chú đơn thuốc</label>
                 <input type="text" value={formData.prescriptionNotes} onChange={(e) => updateField('prescriptionNotes', e.target.value)} placeholder="VD: Uống sau ăn, tránh rượu bia..." className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/30" />
+            </div>
+        </div>
+
+        {/* Tổng hợp chi phí Section - Nằm cuối cùng */}
+        <div className="pt-6 border-t border-slate-700/50 mt-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-emerald-900/10 p-5 rounded-2xl border border-emerald-500/20 shadow-lg shadow-emerald-900/5">
+                <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                        <Activity size={20} className="text-emerald-400" />
+                    </div>
+                    <div>
+                        <h3 className="text-md font-bold text-slate-50">Chi phí khám bệnh <span className="text-red-400">*</span></h3>
+                        <p className="text-xs text-slate-500">Nhập tổng số tiền cần thanh toán</p>
+                    </div>
+                </div>
+                <div className="relative min-w-[280px]">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400 font-bold text-lg select-none">VNĐ</div>
+                    <input
+                        type="text"
+                        value={formData.actualFee ? String(formData.actualFee).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''}
+                        onChange={(e) => {
+                            // Chuyển về số thuần túy trước khi lưu vào state
+                            const raw = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+                            updateField('actualFee', raw);
+                        }}
+                        placeholder="0"
+                        className="w-full bg-slate-950 border-2 border-emerald-500/30 rounded-xl pl-10 pr-4 py-3.5 text-2xl font-black text-emerald-400 focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all text-right tracking-tight"
+                    />
+                </div>
             </div>
         </div>
     </div>
@@ -416,6 +456,7 @@ const PreviewView = ({ formData, patientName }: { formData: MedicalRecordData; p
                 )}
                 {formData.diagnosis && <PreviewField label="Chẩn đoán" value={formData.diagnosis} icon={<Stethoscope size={14} />} highlight />}
                 {formData.treatment && <PreviewField label="Điều trị" value={formData.treatment} icon={<FileText size={14} />} />}
+                {formData.actualFee && <PreviewField label="Chi phí khám" value={`${Number(formData.actualFee).toLocaleString('vi-VN')} VNĐ`} icon={<FileText size={14} />} />}
             </div>
             {formData.notes && <PreviewField label="Ghi chú" value={formData.notes} icon={<FileText size={14} />} />}
             {formData.followUpDate && (

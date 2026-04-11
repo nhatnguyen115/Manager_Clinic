@@ -98,7 +98,7 @@ const PaymentHistoryPage = () => {
                     </div>
                     <div className="glass-stat rounded-xl p-4 text-center" style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(245,158,11,0.03) 100%)', borderColor: 'rgba(245,158,11,0.15)' }}>
                         <p className="text-xl font-black text-amber-400">{payments.filter(p => p.status === 'PENDING').length}</p>
-                        <p className="text-[11px] text-slate-400 font-medium mt-0.5">Chờ thanh toán</p>
+                        <p className="text-[11px] text-slate-400 font-medium mt-0.5">Đã khám, chờ thanh toán</p>
                     </div>
                     <div className="glass-stat rounded-xl p-4 text-center" style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.03) 100%)', borderColor: 'rgba(59,130,246,0.15)' }}>
                         <p className="text-xl font-black text-blue-400">{payments.length}</p>

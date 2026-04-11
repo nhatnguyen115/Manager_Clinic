@@ -57,7 +57,7 @@ public class MedicalRecordService {
                 // Verify doctor ownership or admin
                 if (appointment.getDoctor() == null || appointment.getDoctor().getUser() == null) {
                         log.error("Data inconsistency: Appointment {} has no doctor or doctor has no user",
-                                        appointment.getId());
+                                         appointment.getId());
                         throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
                 }
 
@@ -78,6 +78,8 @@ public class MedicalRecordService {
                                 .build();
 
                 record = medicalRecordRepository.save(record);
+
+                appointment.setActualFee(request.getActualFee());
 
                 // Update appointment status to COMPLETED
                 appointment.setStatus(AppointmentStatus.COMPLETED);
@@ -114,20 +116,41 @@ public class MedicalRecordService {
 
                 try {
                         // Web Notification to Patient
-                        notificationService.sendNotification(
-                                        appointment.getPatient().getUser(),
-                                        "Có bệnh án mới",
-                                        "Bác sĩ " + appointment.getDoctor().getUser().getFullName()
-                                                        + " đã cập nhật bệnh án cho lịch hẹn ngày "
-                                                        + appointment.getAppointmentDate(),
-                                        com.clinic.entity.enums.NotificationType.APPOINTMENT,
-                                        "MEDICAL_RECORD",
-                                        record.getId());
+                        User patientUser = appointment.getPatient() != null ? appointment.getPatient().getUser() : null;
+                        if (patientUser != null) {
+                                String doctorName = (appointment.getDoctor() != null && appointment.getDoctor().getUser() != null)
+                                                ? appointment.getDoctor().getUser().getFullName()
+                                                : "Bác sĩ";
 
+                                try {
+                                        notificationService.sendNotification(
+                                                        patientUser,
+                                                        "Có bệnh án mới",
+                                                        "Bác sĩ " + doctorName
+                                                                        + " đã cập nhật bệnh án cho lịch hẹn ngày "
+                                                                        + appointment.getAppointmentDate(),
+                                                        com.clinic.entity.enums.NotificationType.APPOINTMENT,
+                                                        "MEDICAL_RECORD",
+                                                        record.getId());
+                                } catch (Exception ne) {
+                                        log.warn("Failed to send notification for medical record {}, but continuing: {}", 
+                                                record.getId(), ne.getMessage());
+                                }
+                        }
+                } catch (Exception e) {
+                        log.error("Error during post-creation processing of medical record: ", e);
+                }
+
+                try {
                         return mapToResponse(record);
                 } catch (Exception e) {
-                        log.error("Error mapping medical record to response: ", e);
-                        throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+                        log.error("Critical error mapping medical record to response: ", e);
+                        // Return a minimal response instead of 500 if mapping fails
+                        return MedicalRecordResponse.builder()
+                                        .id(record.getId())
+                                        .appointmentId(appointment.getId())
+                                        .diagnosis(record.getDiagnosis())
+                                        .build();
                 }
         }
 
@@ -165,9 +188,11 @@ public class MedicalRecordService {
                 record.setTreatment(request.getTreatment());
                 record.setNotes(request.getNotes());
                 record.setFollowUpDate(request.getFollowUpDate());
+                record.getAppointment().setActualFee(request.getActualFee());
 
                 try {
                         MedicalRecord savedRecord = medicalRecordRepository.save(record);
+                        appointmentRepository.save(record.getAppointment());
                         return mapToResponse(savedRecord);
                 } catch (Exception e) {
                         log.error("Error saving or mapping medical record: ", e);
@@ -216,19 +241,32 @@ public class MedicalRecordService {
                         }
                 }
 
+                String patientName = "Bệnh nhân";
+                if (record.getPatient() != null) {
+                        if (record.getPatient().getUser() != null) {
+                                patientName = record.getPatient().getUser().getFullName();
+                        }
+                }
+
+                String doctorName = "Bác sĩ";
+                if (record.getDoctor() != null && record.getDoctor().getUser() != null) {
+                        doctorName = record.getDoctor().getUser().getFullName();
+                }
+
                 return MedicalRecordResponse.builder()
                                 .id(record.getId())
-                                .appointmentId(record.getAppointment().getId())
-                                .patientId(record.getPatient().getId())
-                                .patientName(record.getPatient().getUser().getFullName())
-                                .doctorId(record.getDoctor().getId())
-                                .doctorName(record.getDoctor().getUser().getFullName())
+                                .appointmentId(record.getAppointment() != null ? record.getAppointment().getId() : null)
+                                .patientId(record.getPatient() != null ? record.getPatient().getId() : null)
+                                .patientName(patientName)
+                                .doctorId(record.getDoctor() != null ? record.getDoctor().getId() : null)
+                                .doctorName(doctorName)
                                 .diagnosis(record.getDiagnosis())
                                 .symptoms(record.getSymptoms())
                                 .vitalSigns(record.getVitalSigns())
                                 .treatment(record.getTreatment())
                                 .notes(record.getNotes())
                                 .followUpDate(record.getFollowUpDate())
+                                .actualFee(record.getAppointment() != null ? record.getAppointment().getActualFee() : null)
                                 .attachments(record.getAttachments())
                                 .prescription(prescriptionResp)
                                 .createdAt(record.getCreatedAt())

@@ -49,6 +49,7 @@ interface MedicalRecordData {
     treatment: string;
     notes: string;
     followUpDate: string;
+    actualFee: number;
     prescriptionNotes: string;
     prescriptionDetails: {
         medicineId: number;
@@ -93,6 +94,7 @@ export const AppointmentDetailModal = ({ isOpen, onClose, appointment, onAction 
                 treatment: data.treatment || undefined,
                 notes: data.notes || undefined,
                 followUpDate: data.followUpDate || undefined,
+                actualFee: data.actualFee,
                 prescriptionDetails: data.prescriptionDetails.length > 0 ? data.prescriptionDetails.map(p => ({
                     medicineId: p.medicineId,
                     dosage: p.dosage,

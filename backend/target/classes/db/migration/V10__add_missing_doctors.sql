@@ -10,10 +10,10 @@
 -- 1. Create User accounts for new doctors
 -- Password: Password123
 INSERT INTO users (id, email, password_hash, full_name, phone, role_id, is_active, email_verified) VALUES
-    (gen_random_uuid(), 'doctor.son@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'BS. Trịnh Văn Sơn', '0912123123', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
-    (gen_random_uuid(), 'doctor.ha@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'BS. Đỗ Thu Hà', '0913123123', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
-    (gen_random_uuid(), 'doctor.quan@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'BS. Ngô Minh Quân', '0914123123', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
-    (gen_random_uuid(), 'doctor.anh@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'BS. Nguyễn Phương Anh', '0915123123', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true);
+    (gen_random_uuid(), 'doctor.son@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Trịnh Văn Sơn', '0912123123', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
+    (gen_random_uuid(), 'doctor.ha@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Đỗ Thu Hà', '0913123123', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
+    (gen_random_uuid(), 'doctor.quan@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Ngô Minh Quân', '0914123123', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
+    (gen_random_uuid(), 'doctor.anh@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Nguyễn Phương Anh', '0915123123', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true);
 
 -- 2. Create Doctor profiles
 INSERT INTO doctors (id, user_id, specialty_id, experience_years, consultation_fee, bio, license_number, education, certifications, avg_rating, total_reviews) VALUES

@@ -27,10 +27,10 @@ UPDATE specialties SET icon = 'Eye'          WHERE name = 'Mắt';
 -- Password: Password123
 -- ====================================================
 INSERT INTO users (id, email, password_hash, full_name, phone, role_id, is_active, email_verified) VALUES
-    (gen_random_uuid(), 'doctor.minh@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'BS. Phạm Đức Minh', '0971234567', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
-    (gen_random_uuid(), 'doctor.thao@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'BS. Lê Thị Thảo', '0982345678', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
-    (gen_random_uuid(), 'doctor.nam@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'BS. Hoàng Văn Nam', '0993456789', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
-    (gen_random_uuid(), 'doctor.linh@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'BS. Ngô Thị Linh', '0904567890', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true);
+    (gen_random_uuid(), 'doctor.minh@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Phạm Đức Minh', '0971234567', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
+    (gen_random_uuid(), 'doctor.thao@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Lê Thị Thảo', '0982345678', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
+    (gen_random_uuid(), 'doctor.nam@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Hoàng Văn Nam', '0993456789', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
+    (gen_random_uuid(), 'doctor.linh@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Ngô Thị Linh', '0904567890', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true);
 
 INSERT INTO doctors (id, user_id, specialty_id, experience_years, consultation_fee, bio, license_number, education, certifications, avg_rating, total_reviews) VALUES
     -- Nội khoa doctor

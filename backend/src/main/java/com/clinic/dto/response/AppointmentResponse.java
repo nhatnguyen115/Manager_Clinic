@@ -4,6 +4,7 @@ import com.clinic.entity.enums.AppointmentStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,5 +35,6 @@ public class AppointmentResponse {
     LocalDateTime completedAt;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-    java.math.BigDecimal consultationFee;
+    BigDecimal consultationFee;
+    BigDecimal actualFee;
 }

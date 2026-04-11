@@ -11,8 +11,8 @@ INSERT INTO users (id, email, password_hash, full_name, phone, role_id, is_activ
     (gen_random_uuid(), 'admin@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Hệ thống Admin', '0901234567', (SELECT id FROM roles WHERE name = 'ADMIN'), true, true),
     
     -- Doctors
-    (gen_random_uuid(), 'doctor.hung@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'BS. Nguyễn Văn Hùng', '0912345678', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
-    (gen_random_uuid(), 'doctor.lan@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'BS. Trần Thị Lan', '0923456789', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
+    (gen_random_uuid(), 'doctor.hung@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Nguyễn Văn Hùng', '0912345678', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
+    (gen_random_uuid(), 'doctor.lan@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Trần Thị Lan', '0923456789', (SELECT id FROM roles WHERE name = 'DOCTOR'), true, true),
     
     -- Receptionist
     (gen_random_uuid(), 'nhanvien.mai@clinicpro.com', '$2b$12$6mT1XNqMrJbHnL0OoOv54OG5D34b2M84h3p0TB6DZvpphfFGNbu.q', 'Nguyễn Thị Mai', '0934567890', (SELECT id FROM roles WHERE name = 'RECEPTIONIST'), true, true),

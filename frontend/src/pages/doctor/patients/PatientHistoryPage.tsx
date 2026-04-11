@@ -212,6 +212,7 @@ const PatientHistoryPage = () => {
                     treatment: editingRecord.treatment || '',
                     notes: editingRecord.notes || '',
                     followUpDate: editingRecord.followUpDate,
+                    actualFee: editingRecord.actualFee,
                     prescription: editingRecord.prescription ? {
                         notes: editingRecord.prescription.notes || '',
                         details: editingRecord.prescription.details?.map(d => ({

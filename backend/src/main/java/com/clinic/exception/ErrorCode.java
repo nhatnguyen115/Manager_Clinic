@@ -26,6 +26,7 @@ public enum ErrorCode {
     APPOINTMENT_CANCEL_FORBIDDEN(2003, "Cannot cancel this appointment", HttpStatus.BAD_REQUEST),
     MEDICINE_NOT_FOUND(2004, "Medicine not found", HttpStatus.NOT_FOUND),
     REVIEW_ALREADY_EXISTS(2005, "You have already reviewed this appointment", HttpStatus.BAD_REQUEST),
+    APPOINTMENT_PAYMENT_NOT_READY(2006, "Appointment is not ready for payment yet", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

@@ -40,7 +40,7 @@ export const DoctorReviewsModal = ({ isOpen, onClose, doctorId, doctorName }: Do
         : 0;
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={`Đánh giá về BS. ${doctorName}`} size="lg">
+        <Modal isOpen={isOpen} onClose={onClose} title={`Đánh giá về ${doctorName}`} size="lg">
             {isLoading ? (
                 <div className="py-12 flex justify-center">
                     <Loading text="Đang tải đánh giá..." />
@@ -50,11 +50,11 @@ export const DoctorReviewsModal = ({ isOpen, onClose, doctorId, doctorName }: Do
                     {reviews.length > 0 ? (
                         <>
                             {/* Summary Stats */}
-                            <div className="bg-slate-800/50 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 border border-slate-700">
+                            <div className="bg-dark-800/50 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 border border-dark-700">
                                 <div className="text-center">
-                                    <div className="text-5xl font-bold text-slate-50">{averageRating.toFixed(1)}</div>
+                                    <div className="text-5xl font-bold text-dark-50">{averageRating.toFixed(1)}</div>
                                     <StarRating rating={averageRating} size={24} className="mt-2 justify-center" />
-                                    <div className="text-slate-400 text-sm mt-1">{reviews.length} đánh giá</div>
+                                    <div className="text-dark-400 text-sm mt-1">{reviews.length} đánh giá</div>
                                 </div>
                                 <div className="flex-1 w-full space-y-2">
                                     {[5, 4, 3, 2, 1].map((stars) => {
@@ -62,14 +62,14 @@ export const DoctorReviewsModal = ({ isOpen, onClose, doctorId, doctorName }: Do
                                         const percentage = (count / reviews.length) * 100;
                                         return (
                                             <div key={stars} className="flex items-center gap-3">
-                                                <div className="text-xs font-medium text-slate-300 w-4">{stars}</div>
-                                                <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                                <div className="text-xs font-medium text-dark-300 w-4">{stars}</div>
+                                                <div className="flex-1 h-2 bg-dark-700 rounded-full overflow-hidden">
                                                     <div
                                                         className="h-full bg-warning transition-all duration-500"
                                                         style={{ width: `${percentage}%` }}
                                                     />
                                                 </div>
-                                                <div className="text-xs text-slate-500 w-8">{count}</div>
+                                                <div className="text-xs text-dark-500 w-8">{count}</div>
                                             </div>
                                         );
                                     })}
@@ -77,27 +77,27 @@ export const DoctorReviewsModal = ({ isOpen, onClose, doctorId, doctorName }: Do
                             </div>
 
                             {/* Review List */}
-                            <div className="divide-y divide-slate-800">
+                            <div className="divide-y divide-dark-800">
                                 {reviews.map((review) => (
                                     <div key={review.id} className="py-6 first:pt-0 last:pb-0">
                                         <div className="flex justify-between items-start mb-2">
                                             <div>
-                                                <div className="font-bold text-slate-50">{review.patientName}</div>
-                                                <div className="text-xs text-slate-500">
+                                                <div className="font-bold text-dark-50">{review.patientName}</div>
+                                                <div className="text-xs text-dark-500">
                                                     {format(new Date(review.createdAt), 'dd MMMM, yyyy', { locale: vi })}
                                                 </div>
                                             </div>
                                             <StarRating rating={review.rating} size={16} />
                                         </div>
-                                        <p className="text-slate-200 mt-3 text-[15px] leading-relaxed">
-                                            {review.comment || <span className="italic text-slate-500 text-sm">Không có nhận xét.</span>}
+                                        <p className="text-dark-200 mt-3 text-[15px] leading-relaxed">
+                                            {review.comment || <span className="italic text-dark-500 text-sm">Không có nhận xét.</span>}
                                         </p>
                                         {review.adminResponse && (
                                             <div className="mt-4 bg-primary-900/10 border-l-4 border-primary-500 p-4 rounded-r-xl">
                                                 <div className="text-xs font-bold text-primary-400 uppercase tracking-wider mb-1">
                                                     Phòng khám phản hồi:
                                                 </div>
-                                                <p className="text-sm text-slate-300">{review.adminResponse}</p>
+                                                <p className="text-sm text-dark-300">{review.adminResponse}</p>
                                             </div>
                                         )}
                                     </div>
@@ -106,8 +106,8 @@ export const DoctorReviewsModal = ({ isOpen, onClose, doctorId, doctorName }: Do
                         </>
                     ) : (
                         <div className="py-20 text-center">
-                            <div className="text-slate-600 mb-2">Chưa có đánh giá nào cho bác sĩ này.</div>
-                            <p className="text-slate-500 text-sm">Trở thành người đầu tiên chia sẻ cảm nhận!</p>
+                            <div className="text-dark-600 mb-2">Chưa có đánh giá nào cho bác sĩ này.</div>
+                            <p className="text-dark-500 text-sm">Trở thành người đầu tiên chia sẻ cảm nhận!</p>
                         </div>
                     )}
                 </div>

@@ -156,6 +156,7 @@ export const createMedicalRecord = async (data: {
     treatment?: string;
     notes?: string;
     followUpDate?: string;
+    actualFee: number;
     prescriptionDetails?: {
         medicineId: number;
         dosage: string;
@@ -179,6 +180,7 @@ export const updateMedicalRecord = async (
         treatment?: string;
         notes?: string;
         followUpDate?: string;
+        actualFee: number;
         prescriptionDetails?: {
             medicineId: number;
             dosage: string;

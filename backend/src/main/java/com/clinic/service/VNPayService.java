@@ -45,16 +45,25 @@ public class VNPayService {
         Appointment appointment = appointmentRepository.findById(request.getAppointmentId())
                 .orElseThrow(() -> new AppException(ErrorCode.APPOINTMENT_NOT_FOUND));
 
+        if (appointment.getStatus() != AppointmentStatus.COMPLETED) {
+            throw new AppException(ErrorCode.APPOINTMENT_PAYMENT_NOT_READY);
+        }
+
+        if (appointment.getActualFee() == null || appointment.getActualFee().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new AppException(ErrorCode.APPOINTMENT_PAYMENT_NOT_READY);
+        }
+
         // Reuse existing PENDING payment, or create a new one
         Payment payment = paymentRepository.findByAppointmentIdAndStatus(
                 appointment.getId(), PaymentStatus.PENDING)
                 .orElseGet(() -> Payment.builder()
                         .appointment(appointment)
                         .patient(appointment.getPatient())
-                        .amount(appointment.getDoctor().getConsultationFee())
+                        .amount(appointment.getActualFee())
                         .paymentMethod(PaymentMethod.VNPAY)
                         .status(PaymentStatus.PENDING)
                         .build());
+        payment.setAmount(appointment.getActualFee());
         payment = paymentRepository.save(payment);
 
         String vnp_Version = "2.1.0";
@@ -258,10 +267,14 @@ public class VNPayService {
 
         // 1. Fetch all billable appointments
         List<Appointment> appointments = appointmentRepository.findAllByPatientUserIdAndStatusIn(
-                userId, List.of(AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED));
+                userId, List.of(AppointmentStatus.COMPLETED));
 
         // 2. Ensure each has a payment record (auto-create PENDING if missing)
         for (Appointment app : appointments) {
+            if (app.getActualFee() == null || app.getActualFee().compareTo(BigDecimal.ZERO) <= 0) {
+                continue;
+            }
+
             boolean hasPayment = paymentRepository.findByAppointmentIdAndStatus(app.getId(), PaymentStatus.PENDING)
                     .isPresent()
                     || paymentRepository.findByAppointmentIdAndStatus(app.getId(), PaymentStatus.COMPLETED).isPresent();
@@ -271,11 +284,19 @@ public class VNPayService {
                 Payment payment = Payment.builder()
                         .appointment(app)
                         .patient(app.getPatient())
-                        .amount(app.getDoctor().getConsultationFee())
+                        .amount(app.getActualFee())
                         .paymentMethod(PaymentMethod.VNPAY)
                         .status(PaymentStatus.PENDING)
                         .build();
                 paymentRepository.save(payment);
+            } else {
+                paymentRepository.findByAppointmentIdAndStatus(app.getId(), PaymentStatus.PENDING)
+                        .ifPresent(payment -> {
+                            if (payment.getAmount() == null || payment.getAmount().compareTo(app.getActualFee()) != 0) {
+                                payment.setAmount(app.getActualFee());
+                                paymentRepository.save(payment);
+                            }
+                        });
             }
         }
 

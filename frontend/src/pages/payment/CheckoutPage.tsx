@@ -43,6 +43,12 @@ const CheckoutPage = () => {
                     return;
                 }
 
+                if (found.status !== 'COMPLETED' || !found.actualFee || found.actualFee <= 0) {
+                    toast.error('Bác sĩ chưa hoàn tất khám hoặc chưa cập nhật chi phí cho lịch hẹn này');
+                    navigate(`/appointments/${appointmentId}`);
+                    return;
+                }
+
                 setAppointment(found);
             } catch (error) {
                 console.error('Failed to load appointment:', error);
@@ -150,7 +156,7 @@ const CheckoutPage = () => {
 
                     <div className="flex items-center gap-3 p-4 bg-amber-900/10 border border-amber-800/20 rounded-2xl text-amber-500 text-sm">
                         <AlertCircle size={18} />
-                        <p>Vui lòng thanh toán để xác nhận lịch hẹn chính thức với bác sĩ.</p>
+                        <p>Chi phí đã được bác sĩ cập nhật sau khi khám. Bạn có thể thanh toán ngay tại đây.</p>
                     </div>
                 </div>
 
@@ -162,7 +168,7 @@ const CheckoutPage = () => {
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center text-slate-300">
                                     <span className="text-sm">Giá dịch vụ</span>
-                                    <span className="font-medium text-slate-100">{appointment.consultationFee?.toLocaleString('vi-VN')} đ</span>
+                                    <span className="font-medium text-slate-100">{appointment.actualFee?.toLocaleString('vi-VN')} đ</span>
                                 </div>
                                 <div className="flex justify-between items-center text-slate-300 pb-4 border-b border-slate-700/50">
                                     <span className="text-sm">Phí giao dịch</span>
@@ -171,7 +177,7 @@ const CheckoutPage = () => {
                                 <div className="flex justify-between items-center pt-2">
                                     <span className="font-bold text-slate-50">Tổng thanh toán</span>
                                     <span className="text-xl font-black text-primary-400">
-                                        {appointment.consultationFee?.toLocaleString('vi-VN')} đ
+                                        {appointment.actualFee?.toLocaleString('vi-VN')} đ
                                     </span>
                                 </div>
 

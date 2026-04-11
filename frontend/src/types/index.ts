@@ -271,6 +271,7 @@ export interface AppointmentResponse {
     symptoms?: string;
     notes?: string;
     consultationFee?: number;
+    actualFee?: number;
     cancelledBy?: string;
     cancelledReason?: string;
     confirmedAt?: string;
@@ -329,6 +330,7 @@ export interface MedicalRecordResponse {
     treatment?: string;
     notes?: string;
     followUpDate?: string;
+    actualFee?: number;
     attachments?: string[];
     prescription?: PrescriptionResponse;
     createdAt: string;
