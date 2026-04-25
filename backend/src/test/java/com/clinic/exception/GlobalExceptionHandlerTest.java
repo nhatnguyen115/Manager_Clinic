@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.mock.http.MockHttpInputMessage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -43,5 +45,21 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode(), response.getBody().getCode());
         assertEquals(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage(), response.getBody().getMessage());
+    }
+
+    @Test
+    void handlingHttpMessageNotReadableException_ReturnsInvalidKeyError() {
+        // Arrange
+        HttpMessageNotReadableException exception = new HttpMessageNotReadableException(
+                "Invalid JSON", new MockHttpInputMessage("invalid".getBytes()));
+
+        // Act
+        ResponseEntity<ApiResponse<?>> response = globalExceptionHandler
+                .handlingHttpMessageNotReadableException(exception);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ErrorCode.INVALID_KEY.getCode(), response.getBody().getCode());
+        assertEquals("Invalid data format or missing required fields", response.getBody().getMessage());
     }
 }

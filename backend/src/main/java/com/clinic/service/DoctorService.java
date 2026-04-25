@@ -8,6 +8,7 @@ import com.clinic.entity.User;
 import com.clinic.exception.AppException;
 import com.clinic.exception.ErrorCode;
 import com.clinic.repository.DoctorRepository;
+import com.clinic.repository.ReviewRepository;
 import com.clinic.repository.SpecialtyRepository;
 import com.clinic.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,16 +25,18 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class DoctorService {
 
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
     private final SpecialtyRepository specialtyRepository;
+    private final ReviewRepository reviewRepository;
 
     public List<DoctorResponse> getAllDoctors(UUID specialtyId) {
         List<Doctor> doctors;
         if (specialtyId != null) {
-            doctors = doctorRepository.findBySpecialtyIdAndIsAvailableTrue(specialtyId,
+            doctors = doctorRepository.findBySpecialty_IdAndIsAvailableTrue(specialtyId,
                     org.springframework.data.domain.Pageable.unpaged()).getContent();
         } else {
             doctors = doctorRepository.findAll();
@@ -109,10 +114,44 @@ public class DoctorService {
         return mapToResponse(doctorRepository.save(doctor));
     }
 
+    @Transactional
+    public DoctorResponse updateDoctorSpecialty(UUID doctorId, UUID specialtyId) {
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        if (specialtyId != null) {
+            Specialty specialty = specialtyRepository.findById(specialtyId)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+            doctor.setSpecialty(specialty);
+        } else {
+            doctor.setSpecialty(null);
+        }
+
+        return mapToResponse(doctorRepository.save(doctor));
+    }
+
+    public List<DoctorResponse> getDoctorsNoSpecialty() {
+        return doctorRepository.findBySpecialtyIsNull().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     private DoctorResponse mapToResponse(Doctor doctor) {
         User user = doctor.getUser();
+        UUID doctorId = doctor.getId();
+
+        // Fetch live stats from DB to ensure accuracy
+        Double liveAvg = reviewRepository.getAverageRatingByDoctorId(doctorId);
+        Long liveCount = reviewRepository.countByDoctorId(doctorId);
+
+        BigDecimal avgRating = liveAvg != null
+                ? BigDecimal.valueOf(liveAvg).setScale(1, RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+        Integer totalReviews = liveCount != null ? liveCount.intValue() : 0;
+
         return DoctorResponse.builder()
-                .id(doctor.getId())
+                .id(doctorId)
+                .userId(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhone())
@@ -124,10 +163,11 @@ public class DoctorService {
                 .isAvailable(doctor.getIsAvailable())
                 .specialtyId(doctor.getSpecialty() != null ? doctor.getSpecialty().getId() : null)
                 .specialtyName(doctor.getSpecialty() != null ? doctor.getSpecialty().getName() : null)
-                .avgRating(doctor.getAvgRating())
-                .totalReviews(doctor.getTotalReviews())
+                .avgRating(avgRating)
+                .totalReviews(totalReviews)
                 .education(doctor.getEducation())
                 .certifications(doctor.getCertifications())
+                .isActive(user.getIsActive())
                 .build();
     }
 }
