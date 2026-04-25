@@ -4,6 +4,7 @@ import com.clinic.dto.request.ForgotPasswordRequest;
 import com.clinic.dto.request.LoginRequest;
 import com.clinic.dto.request.RegisterRequest;
 import com.clinic.dto.request.ResetPasswordRequest;
+import com.clinic.dto.response.ApiResponse;
 import com.clinic.dto.response.AuthResponse;
 import com.clinic.security.CustomUserDetails;
 import com.clinic.service.AuthService;
@@ -23,21 +24,27 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<ApiResponse<String>> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
         authService.register(registerRequest);
-        return ResponseEntity.ok(Map.of("message", "User registered successfully"));
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .message("User registered successfully")
+                .build());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(authService.login(loginRequest));
+    public ResponseEntity<ApiResponse<AuthResponse>> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(ApiResponse.<AuthResponse>builder()
+                .result(authService.login(loginRequest))
+                .build());
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestBody Map<String, String> request) {
+    public ResponseEntity<ApiResponse<Map<String, String>>> refreshToken(@RequestBody Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
         String accessToken = authService.refreshAccessToken(refreshToken);
-        return ResponseEntity.ok(Map.of("accessToken", accessToken));
+        return ResponseEntity.ok(ApiResponse.<Map<String, String>>builder()
+                .result(Map.of("accessToken", accessToken))
+                .build());
     }
 
     @PostMapping("/logout")

@@ -1,5 +1,6 @@
 package com.clinic.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PatientResponse {
     UUID id;
+    UUID userId;
     String fullName;
     String email;
     LocalDate dateOfBirth;
@@ -26,4 +28,7 @@ public class PatientResponse {
     String emergencyContactName;
     String emergencyContactPhone;
     String insuranceNumber;
+
+    @JsonProperty("isActive")
+    boolean isActive;
 }

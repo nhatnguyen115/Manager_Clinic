@@ -27,9 +27,10 @@ public class SecurityConfig {
             // Public API endpoints
             "/api/public/**",
             "/api/doctors",
-            "/api/doctors/{id}",
-            "/api/doctors/{id}/reviews",
+            "/api/doctors/**",
             "/api/specialties",
+            "/api/specialties/**",
+            "/api/appointments/available-slots",
             "/api/medicines",
             "/api/payments/vnpay-callback",
 
@@ -37,11 +38,15 @@ public class SecurityConfig {
             "/api/health",
             "/actuator/health",
 
+            // WebSocket
+            "/ws-clinic/**",
+
             // Swagger / OpenAPI
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**",
-            "/api-docs/**"
+            "/api-docs/**",
+            "/error"
     };
 
     private final com.clinic.security.jwt.JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -85,6 +90,7 @@ public class SecurityConfig {
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_URLS).permitAll()
+                        .requestMatchers("/api/chat/**").authenticated() // AI Chatbot needs authentication
                         .anyRequest().authenticated());
 
         // Add JWT Filter

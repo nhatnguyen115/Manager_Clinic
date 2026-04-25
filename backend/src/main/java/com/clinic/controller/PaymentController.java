@@ -38,4 +38,36 @@ public class PaymentController {
                 .result("Payment processed")
                 .build();
     }
+
+    @GetMapping("/history")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ApiResponse<java.util.List<PaymentResponse>> getPaymentHistory() {
+        return ApiResponse.<java.util.List<PaymentResponse>>builder()
+                .result(vnPayService.getPatientPaymentHistory())
+                .build();
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('PATIENT') or hasRole('ADMIN')")
+    public ApiResponse<PaymentResponse> getPaymentDetail(@PathVariable java.util.UUID id) {
+        return ApiResponse.<PaymentResponse>builder()
+                .result(vnPayService.getPaymentDetail(id))
+                .build();
+    }
+
+    /**
+     * Called by frontend after VNPay return redirect.
+     * Updates payment status and creates invoice without re-verifying HMAC.
+     */
+    @PostMapping("/confirm-return")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ApiResponse<PaymentResponse> confirmReturn(
+            @RequestParam String txnRef,
+            @RequestParam String responseCode,
+            @RequestParam(defaultValue = "00") String transactionStatus,
+            @RequestParam(required = false, defaultValue = "") String transactionNo) {
+        return ApiResponse.<PaymentResponse>builder()
+                .result(vnPayService.confirmReturnPayment(txnRef, responseCode, transactionStatus, transactionNo))
+                .build();
+    }
 }

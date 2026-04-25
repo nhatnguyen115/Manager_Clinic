@@ -25,5 +25,7 @@ public class AuthResponse {
         private String email;
         private String fullName;
         private String role;
+        private UUID doctorId;
+        private UUID patientId;
     }
 }
