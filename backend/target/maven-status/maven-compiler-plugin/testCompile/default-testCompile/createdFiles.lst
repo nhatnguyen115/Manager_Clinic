@@ -1,11 +1,17 @@
 com\clinic\controller\AppointmentControllerIT.class
 com\clinic\controller\PatientControllerIT.class
 com\clinic\controller\UserControllerIT.class
+com\clinic\service\UserServiceTest.class
 com\clinic\controller\DoctorControllerIT.class
 com\clinic\controller\MedicalRecordControllerIT.class
+com\clinic\controller\PaymentControllerIT.class
 com\clinic\controller\SpecialtyControllerIT.class
 com\clinic\controller\ReviewControllerIT.class
+com\clinic\service\SpecialtyServiceTest.class
+com\clinic\service\DoctorServiceTest.class
 com\clinic\controller\AuthControllerIT.class
 com\clinic\exception\GlobalExceptionHandlerTest.class
 com\clinic\security\jwt\JwtTokenProviderTest.class
+com\clinic\controller\AdminControllerIT.class
 com\clinic\ClinicApplicationTests.class
+com\clinic\service\AdminServiceTest.class

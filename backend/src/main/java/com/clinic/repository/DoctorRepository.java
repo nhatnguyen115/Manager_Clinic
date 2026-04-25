@@ -23,7 +23,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
 
     Page<Doctor> findByIsAvailableTrue(Pageable pageable);
 
-    Page<Doctor> findBySpecialtyIdAndIsAvailableTrue(UUID specialtyId, Pageable pageable);
+    Page<Doctor> findBySpecialty_IdAndIsAvailableTrue(UUID specialtyId, Pageable pageable);
 
     @Query("SELECT d FROM Doctor d JOIN d.user u WHERE " +
             "LOWER(u.fullName) LIKE LOWER(CONCAT('%', :search, '%')) " +
@@ -32,4 +32,11 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
 
     @Query("SELECT d FROM Doctor d WHERE d.isAvailable = true ORDER BY d.avgRating DESC")
     List<Doctor> findTopRated(Pageable pageable);
+
+    @Query("SELECT d FROM Doctor d JOIN FETCH d.user WHERE d.id = :id")
+    Optional<Doctor> findByIdWithUser(@Param("id") UUID id);
+
+    long countBySpecialtyId(UUID specialtyId);
+
+    List<Doctor> findBySpecialtyIsNull();
 }

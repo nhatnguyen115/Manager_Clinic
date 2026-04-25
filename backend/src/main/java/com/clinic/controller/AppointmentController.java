@@ -21,56 +21,56 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AppointmentController {
 
-    private final AppointmentService appointmentService;
+        private final AppointmentService appointmentService;
 
-    @PostMapping
-    @PreAuthorize("hasRole('PATIENT')")
-    public ApiResponse<AppointmentResponse> createAppointment(@Valid @RequestBody AppointmentRequest request) {
-        return ApiResponse.<AppointmentResponse>builder()
-                .result(appointmentService.createAppointment(request))
-                .build();
-    }
+        @PostMapping
+        @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR', 'ADMIN')")
+        public ApiResponse<AppointmentResponse> createAppointment(@Valid @RequestBody AppointmentRequest request) {
+                return ApiResponse.<AppointmentResponse>builder()
+                                .result(appointmentService.createAppointment(request))
+                                .build();
+        }
 
-    @GetMapping("/available-slots")
-    public ApiResponse<List<TimeSlotResponse>> getAvailableSlots(
-            @RequestParam UUID doctorId,
-            @RequestParam LocalDate date) {
-        return ApiResponse.<List<TimeSlotResponse>>builder()
-                .result(appointmentService.getAvailableSlots(doctorId, date))
-                .build();
-    }
+        @GetMapping("/available-slots")
+        public ApiResponse<List<TimeSlotResponse>> getAvailableSlots(
+                        @RequestParam UUID doctorId,
+                        @RequestParam LocalDate date) {
+                return ApiResponse.<List<TimeSlotResponse>>builder()
+                                .result(appointmentService.getAvailableSlots(doctorId, date))
+                                .build();
+        }
 
-    @GetMapping("/me")
-    @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR')")
-    public ApiResponse<List<AppointmentResponse>> getMyAppointments() {
-        return ApiResponse.<List<AppointmentResponse>>builder()
-                .result(appointmentService.getMyAppointments())
-                .build();
-    }
+        @GetMapping("/me")
+        @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR')")
+        public ApiResponse<List<AppointmentResponse>> getMyAppointments() {
+                return ApiResponse.<List<AppointmentResponse>>builder()
+                                .result(appointmentService.getMyAppointments())
+                                .build();
+        }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or @appointmentSecurity.isAuthorized(#id, principal)")
-    public ApiResponse<AppointmentResponse> getAppointmentById(@PathVariable UUID id) {
-        return ApiResponse.<AppointmentResponse>builder()
-                .result(appointmentService.getAppointmentById(id))
-                .build();
-    }
+        @GetMapping("/{id}")
+        @PreAuthorize("hasRole('ADMIN') or @appointmentSecurity.isAuthorized(#id, principal)")
+        public ApiResponse<AppointmentResponse> getAppointmentById(@PathVariable UUID id) {
+                return ApiResponse.<AppointmentResponse>builder()
+                                .result(appointmentService.getAppointmentById(id))
+                                .build();
+        }
 
-    @PutMapping("/{id}/status")
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('DOCTOR') and @appointmentSecurity.isAuthorized(#id, principal))")
-    public ApiResponse<AppointmentResponse> updateStatus(@PathVariable UUID id,
-            @Valid @RequestBody AppointmentStatusRequest request) {
-        return ApiResponse.<AppointmentResponse>builder()
-                .result(appointmentService.updateStatus(id, request))
-                .build();
-    }
+        @PutMapping("/{id}/status")
+        @PreAuthorize("hasRole('ADMIN') or (hasRole('DOCTOR') and @appointmentSecurity.isAuthorized(#id, principal))")
+        public ApiResponse<AppointmentResponse> updateStatus(@PathVariable UUID id,
+                        @Valid @RequestBody AppointmentStatusRequest request) {
+                return ApiResponse.<AppointmentResponse>builder()
+                                .result(appointmentService.updateStatus(id, request))
+                                .build();
+        }
 
-    @PutMapping("/{id}/cancel")
-    @PreAuthorize("hasRole('ADMIN') or @appointmentSecurity.isAuthorized(#id, principal)")
-    public ApiResponse<AppointmentResponse> cancelAppointment(@PathVariable UUID id,
-            @Valid @RequestBody AppointmentCancelRequest request) {
-        return ApiResponse.<AppointmentResponse>builder()
-                .result(appointmentService.cancelAppointment(id, request))
-                .build();
-    }
+        @PutMapping("/{id}/cancel")
+        @PreAuthorize("hasRole('ADMIN') or @appointmentSecurity.isAuthorized(#id, principal)")
+        public ApiResponse<AppointmentResponse> cancelAppointment(@PathVariable UUID id,
+                        @Valid @RequestBody AppointmentCancelRequest request) {
+                return ApiResponse.<AppointmentResponse>builder()
+                                .result(appointmentService.cancelAppointment(id, request))
+                                .build();
+        }
 }

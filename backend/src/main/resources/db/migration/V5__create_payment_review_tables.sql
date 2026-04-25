@@ -7,7 +7,7 @@
 -- PAYMENTS TABLE
 -- =====================================================
 CREATE TABLE payments (
-    id                  UUID DEFAULT random_uuid() PRIMARY KEY,
+    id                  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     appointment_id      UUID REFERENCES appointments(id),
     patient_id          UUID NOT NULL REFERENCES patients(id),
     amount              DECIMAL(15,2) NOT NULL,
@@ -29,10 +29,10 @@ CREATE INDEX idx_payments_status ON payments(status);
 -- INVOICES TABLE
 -- =====================================================
 CREATE TABLE invoices (
-    id                  UUID DEFAULT random_uuid() PRIMARY KEY,
+    id                  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     payment_id          UUID UNIQUE REFERENCES payments(id),
     invoice_number      VARCHAR(50) UNIQUE NOT NULL,
-    items               JSON NOT NULL,
+    items               JSONB NOT NULL,
     subtotal            DECIMAL(15,2) NOT NULL,
     tax_rate            DECIMAL(5,2) DEFAULT 0,
     tax_amount          DECIMAL(15,2) DEFAULT 0,
@@ -46,7 +46,7 @@ CREATE TABLE invoices (
 -- REVIEWS TABLE
 -- =====================================================
 CREATE TABLE reviews (
-    id                  UUID DEFAULT random_uuid() PRIMARY KEY,
+    id                  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     patient_id          UUID NOT NULL REFERENCES patients(id),
     doctor_id           UUID NOT NULL REFERENCES doctors(id),
     appointment_id      UUID UNIQUE REFERENCES appointments(id),

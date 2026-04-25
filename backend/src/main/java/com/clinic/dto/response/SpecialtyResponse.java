@@ -17,4 +17,5 @@ public class SpecialtyResponse {
     String icon;
     Boolean isActive;
     Integer displayOrder;
+    Long doctorCount;
 }

@@ -1,11 +1,13 @@
 package com.clinic.entity;
 
+import com.clinic.entity.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +42,19 @@ public class Doctor extends BaseEntity {
 
     @Column(name = "license_number", length = 50)
     private String licenseNumber;
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", length = 10)
+    private Gender gender;
+
+    @Column(name = "address", columnDefinition = "TEXT")
+    private String address;
+
+    @Column(name = "city", length = 100)
+    private String city;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "education", columnDefinition = "TEXT[]")

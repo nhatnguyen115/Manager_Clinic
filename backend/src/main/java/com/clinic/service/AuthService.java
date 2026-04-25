@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -46,6 +45,8 @@ public class AuthService {
         private final PasswordResetTokenRepository passwordResetTokenRepository;
         private final PatientRepository patientRepository;
         private final DoctorRepository doctorRepository;
+        private final AuditLogService auditLogService;
+        private final EmailService emailService;
 
         @Value("${app.jwt.refresh-expiration}")
         private long refreshExpiration;
@@ -55,7 +56,8 @@ public class AuthService {
 
         @Transactional
         public void register(RegisterRequest request) {
-                if (userRepository.existsByEmail(request.getEmail())) {
+                String email = request.getEmail().trim().toLowerCase();
+                if (userRepository.existsByEmail(email)) {
                         throw new AppException(ErrorCode.EMAIL_ALREADY_REGISTERED);
                 }
 
@@ -64,7 +66,7 @@ public class AuthService {
 
                 User userToRegister = User.builder()
                                 .fullName(request.getFullName())
-                                .email(request.getEmail())
+                                .email(email)
                                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                                 .phone(request.getPhone())
                                 .role(role)
@@ -80,13 +82,28 @@ public class AuthService {
                         doctorRepository.save(Doctor.builder().user(user).build());
                 }
 
+                auditLogService.log(user.getId(), "REGISTER", "USER", user.getId().toString());
                 log.info("User registered successfully: {}", user.getEmail());
+
+                // Send Welcome Email
+                java.util.Map<String, Object> variables = new java.util.HashMap<>();
+                variables.put("name", user.getFullName());
+                emailService.sendHtmlEmail(user.getEmail(), "Chào mừng bạn đến với ClinicPro", "welcome", variables);
         }
 
         @Transactional
         public AuthResponse login(LoginRequest request) {
+                String email = request.getEmail().trim().toLowerCase();
+                log.info("DEBUG: Attempting login for normalized email: '{}'", email);
+
+                userRepository.findByEmail(email).ifPresentOrElse(
+                                u -> log.info("DEBUG: Found user in DB. Email: '{}', IsActive: {}, Role: {}",
+                                                u.getEmail(), u.getIsActive(),
+                                                u.getRole() != null ? u.getRole().getName() : "NULL"),
+                                () -> log.warn("DEBUG: User NOT found in DB for email: '{}'", email));
+
                 Authentication authentication = authenticationManager.authenticate(
-                                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                                new UsernamePasswordAuthenticationToken(email, request.getPassword()));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -100,7 +117,22 @@ public class AuthService {
                 user.setLastLoginAt(LocalDateTime.now());
                 userRepository.save(user);
 
+                auditLogService.log(user.getId(), "LOGIN", "USER", user.getId().toString());
+
                 saveRefreshToken(user, refreshToken);
+
+                UUID doctorId = null;
+                UUID patientId = null;
+
+                if (user.getRole() != null && user.getRole().getName() == RoleName.DOCTOR) {
+                        doctorId = doctorRepository.findByUserId(user.getId())
+                                        .map(Doctor::getId)
+                                        .orElse(null);
+                } else if (user.getRole().getName() == RoleName.PATIENT) {
+                        patientId = patientRepository.findByUserId(user.getId())
+                                        .map(Patient::getId)
+                                        .orElse(null);
+                }
 
                 return AuthResponse.builder()
                                 .accessToken(accessToken)
@@ -109,7 +141,9 @@ public class AuthService {
                                                 .id(user.getId())
                                                 .email(user.getEmail())
                                                 .fullName(user.getFullName())
-                                                .role(user.getRole().getName().name())
+                                                .role(user.getRole() != null ? user.getRole().getName().name() : null)
+                                                .doctorId(doctorId)
+                                                .patientId(patientId)
                                                 .build())
                                 .build();
         }
@@ -120,13 +154,18 @@ public class AuthService {
                                 .filter(RefreshToken::isValid)
                                 .map(refreshToken -> {
                                         User user = refreshToken.getUser();
-                                        // In a real app, you might want a simpler way to generate token without full
-                                        // Authentication object if just refreshing
-                                        // But here we'll use a mocked authentication for simplicity or refactor
-                                        // tokenProvider
+
+                                        // Explicitly load the user with role to avoid lazy loading issues
+                                        User freshUser = userRepository.findById(user.getId())
+                                                        .orElseThrow(() -> new AppException(
+                                                                        ErrorCode.USER_NOT_EXISTED));
+
+                                        CustomUserDetails userDetails = CustomUserDetails.build(freshUser);
+                                        log.info("[Auth-Refresh] Refreshing token for user: {}, authorities: {}",
+                                                        freshUser.getEmail(), userDetails.getAuthorities());
+
                                         return tokenProvider.generateToken(new UsernamePasswordAuthenticationToken(
-                                                        CustomUserDetails.build(user), null,
-                                                        CustomUserDetails.build(user).getAuthorities()));
+                                                        userDetails, null, userDetails.getAuthorities()));
                                 })
                                 .orElseThrow(() -> new RuntimeException("Invalid or expired refresh token"));
         }
@@ -138,7 +177,8 @@ public class AuthService {
 
         @Transactional
         public void forgotPassword(ForgotPasswordRequest request) {
-                User user = userRepository.findByEmail(request.getEmail())
+                String email = request.getEmail().trim().toLowerCase();
+                User user = userRepository.findByEmail(email)
                                 .orElseThrow(() -> new RuntimeException("Email not found"));
 
                 // Delete old tokens for this user
@@ -153,9 +193,17 @@ public class AuthService {
 
                 passwordResetTokenRepository.save(resetToken);
 
-                // TODO: Send email
+                // Send email
+                String resetUrl = "http://localhost:5173/reset-password?token=" + token;
+                java.util.Map<String, Object> variables = new java.util.HashMap<>();
+                variables.put("name", user.getFullName());
+                variables.put("resetUrl", resetUrl);
+
+                emailService.sendHtmlEmail(user.getEmail(), "Đặt lại mật khẩu - ClinicPro", "password-reset",
+                                variables);
+
                 log.info("PASSWORD RESET TOKEN FOR {}: {}", user.getEmail(), token);
-                log.warn("Link: http://localhost:5173/reset-password?token={}", token);
+                log.warn("Link: {}", resetUrl);
         }
 
         @Transactional

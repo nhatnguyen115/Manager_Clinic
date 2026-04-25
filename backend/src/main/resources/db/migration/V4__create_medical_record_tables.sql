@@ -36,17 +36,17 @@ INSERT INTO medicines (name, generic_name, dosage_form, strength, manufacturer) 
 -- MEDICAL RECORDS TABLE
 -- =====================================================
 CREATE TABLE medical_records (
-    id                  UUID DEFAULT random_uuid() PRIMARY KEY,
+    id                  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     appointment_id      UUID UNIQUE REFERENCES appointments(id),
     patient_id          UUID NOT NULL REFERENCES patients(id),
     doctor_id           UUID NOT NULL REFERENCES doctors(id),
     diagnosis           TEXT NOT NULL,
     symptoms            TEXT,
-    vital_signs         JSON,
+    vital_signs         JSONB,
     treatment           TEXT,
     notes               TEXT,
     follow_up_date      DATE,
-    attachments         JSON,
+    attachments         TEXT[],
     created_at          TIMESTAMP DEFAULT NOW(),
     updated_at          TIMESTAMP DEFAULT NOW()
 );
@@ -58,7 +58,7 @@ CREATE INDEX idx_medical_records_doctor ON medical_records(doctor_id);
 -- PRESCRIPTIONS TABLE
 -- =====================================================
 CREATE TABLE prescriptions (
-    id                  UUID DEFAULT random_uuid() PRIMARY KEY,
+    id                  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     medical_record_id   UUID UNIQUE REFERENCES medical_records(id) ON DELETE CASCADE,
     prescription_number VARCHAR(50) UNIQUE,
     notes               TEXT,

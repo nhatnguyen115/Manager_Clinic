@@ -5,6 +5,7 @@ import com.clinic.dto.response.SpecialtyResponse;
 import com.clinic.entity.Specialty;
 import com.clinic.exception.AppException;
 import com.clinic.exception.ErrorCode;
+import com.clinic.repository.DoctorRepository;
 import com.clinic.repository.SpecialtyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class SpecialtyService {
 
     private final SpecialtyRepository specialtyRepository;
+    private final DoctorRepository doctorRepository;
 
     public List<SpecialtyResponse> getAllActiveSpecialties() {
         return specialtyRepository.findByIsActiveTrueOrderByDisplayOrderAsc().stream()
@@ -92,6 +94,7 @@ public class SpecialtyService {
                 .icon(specialty.getIcon())
                 .isActive(specialty.getIsActive())
                 .displayOrder(specialty.getDisplayOrder())
+                .doctorCount(doctorRepository.countBySpecialtyId(specialty.getId()))
                 .build();
     }
 }

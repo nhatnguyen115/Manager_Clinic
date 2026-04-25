@@ -7,6 +7,7 @@ import com.clinic.entity.User;
 import com.clinic.entity.enums.Gender;
 import com.clinic.exception.AppException;
 import com.clinic.exception.ErrorCode;
+import com.clinic.repository.DoctorRepository;
 import com.clinic.repository.PatientRepository;
 import com.clinic.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
 
     public List<PatientResponse> getAllPatients() {
@@ -33,7 +36,7 @@ public class PatientService {
     }
 
     public PatientResponse getPatientById(UUID id) {
-        Patient patient = patientRepository.findById(id)
+        Patient patient = patientRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return mapToResponse(patient);
     }
@@ -62,10 +65,23 @@ public class PatientService {
         return mapToResponse(patientRepository.save(patient));
     }
 
+    public List<PatientResponse> getPatientsByDoctor(UUID doctorId) {
+        return patientRepository.findDistinctPatientsByDoctorId(doctorId).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<PatientResponse> getPatientsByDoctorUserEmail(String email) {
+        var doctor = doctorRepository.findByUserEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return getPatientsByDoctor(doctor.getId());
+    }
+
     private PatientResponse mapToResponse(Patient patient) {
         User user = patient.getUser();
         return PatientResponse.builder()
                 .id(patient.getId())
+                .userId(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhone())
@@ -79,6 +95,7 @@ public class PatientService {
                 .emergencyContactName(patient.getEmergencyContactName())
                 .emergencyContactPhone(patient.getEmergencyContactPhone())
                 .insuranceNumber(patient.getInsuranceNumber())
+                .isActive(user.getIsActive())
                 .build();
     }
 

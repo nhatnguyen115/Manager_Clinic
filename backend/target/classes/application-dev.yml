@@ -10,24 +10,29 @@ spring:
       minimum-idle: 2
       connection-timeout: 20000
   
+  # Flyway - Development (clean start)
+  flyway:
+    clean-disabled: false
+    clean-on-validation-error: true
+  
   # JPA - Development
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: true
   
-  # Mail - Development (MailHog for local testing)
-  mail:
-    host: localhost
-    port: 1025
-    username: ""
-    password: ""
-    properties:
-      mail:
-        smtp:
-          auth: false
-          starttls:
-            enable: false
+  # Mail - Development (Using Gmail from application.yml)
+  # mail:
+  #   host: localhost
+  #   port: 1025
+  #   username: ""
+  #   password: ""
+  #   properties:
+  #     mail:
+  #       smtp:
+  #         auth: false
+  #         starttls:
+  #           enable: false
 
 # Swagger enabled in dev
 springdoc:

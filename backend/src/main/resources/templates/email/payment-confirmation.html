@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác nhận thanh toán - ClinicPro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #2d3748;
+        }
+
+        .email-wrapper {
+            width: 100%;
+            background-color: #f4f7f9;
+            padding: 40px 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .email-header {
+            background: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);
+            padding: 36px 40px;
+            text-align: center;
+        }
+
+        .email-header .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .email-header .logo span {
+            color: rgba(255, 255, 255, 0.75);
+            font-weight: 400;
+        }
+
+        .email-header .badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-top: 8px;
+            text-transform: uppercase;
+        }
+
+        .email-body {
+            padding: 40px;
+        }
+
+        .greeting {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .amount-banner {
+            background: linear-gradient(135deg, #f0fdf9 0%, #e0f7f4 100%);
+            border: 2px solid #0d9488;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .amount-label {
+            font-size: 13px;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .amount-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0d9488;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .info-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 14px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 500;
+            width: 140px;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #1a202c;
+            font-weight: 600;
+            flex: 1;
+            text-align: right;
+        }
+
+        .cta-section {
+            text-align: center;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 14px 36px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .email-footer {
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 24px 40px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .footer-brand {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0d9488;
+            margin-bottom: 6px;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #a0aec0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <div class="email-header">
+                <div class="logo">Clinic<span>Pro</span></div>
+                <div class="badge">💳 Thanh toán thành công</div>
+            </div>
+            <div class="email-body">
+                <p class="greeting">Xin chào <span style="color:#0d9488;" th:text="${name}">Bệnh nhân</span>!</p>
+                <p class="subtitle">ClinicPro xác nhận bạn đã hoàn tất thanh toán cho hóa đơn dịch vụ y tế.</p>
+                <div class="amount-banner">
+                    <div class="amount-label">Số tiền đã thanh toán</div>
+                    <div class="amount-value" th:text="${amount}">500.000 VND</div>
+                </div>
+                <p class="section-title">Chi tiết hóa đơn</p>
+                <div class="info-card">
+                    <div class="info-row">
+                        <div class="info-label">🧾 Mã hóa đơn</div>
+                        <div class="info-value" th:text="${invoiceNo}">INV-123456</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">💳 Phương thức</div>
+                        <div class="info-value" th:text="${method}">VNPay</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">🕐 Thời gian</div>
+                        <div class="info-value" th:text="${date}">07/03/2026 10:55</div>
+                    </div>
+                </div>
+                <p style="font-size:14px; color:#718096; margin-bottom:28px;">Cảm ơn bạn đã sử dụng dịch vụ của chúng
+                    tôi. Bạn có thể xem chi tiết hóa đơn trong lịch sử khám bệnh.</p>
+                <div class="cta-section">
+                    <a href="http://localhost:5173/medical-history" class="cta-button">Xem lịch sử khám →</a>
+                </div>
+            </div>
+            <div class="email-footer">
+                <div class="footer-brand">ClinicPro</div>
+                <div class="footer-text">&#169; 2026 ClinicPro Management System. All rights reserved.<br>123 Medical
+                    Plaza, Ho Chi Minh City, Vietnam</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

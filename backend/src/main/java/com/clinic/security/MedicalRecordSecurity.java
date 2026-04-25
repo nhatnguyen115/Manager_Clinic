@@ -18,7 +18,7 @@ public class MedicalRecordSecurity {
         }
 
         UUID userId = userDetails.getId();
-        return medicalRecordRepository.findById(recordId)
+        return medicalRecordRepository.findByIdWithUser(recordId)
                 .map(record -> record.getPatient().getUser().getId().equals(userId) ||
                         record.getDoctor().getUser().getId().equals(userId))
                 .orElse(false);
