@@ -8,6 +8,7 @@ import org.hibernate.type.SqlTypes;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * MedicalRecord entity - patient's medical record from an appointment.
@@ -44,7 +45,7 @@ public class MedicalRecord extends BaseEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "vital_signs", columnDefinition = "jsonb")
-    private String vitalSigns; // {"blood_pressure": "120/80", "heart_rate": 75, ...}
+    private Map<String, Object> vitalSigns; // Maps to JSONB in DB
 
     @Column(name = "treatment", columnDefinition = "TEXT")
     private String treatment; // Phương pháp điều trị

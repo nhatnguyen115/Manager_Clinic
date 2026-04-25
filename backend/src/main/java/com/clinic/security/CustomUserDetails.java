@@ -22,7 +22,11 @@ public class CustomUserDetails implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
 
     public static CustomUserDetails build(User user) {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().getName().name());
+        String roleName = (user.getRole() != null && user.getRole().getName() != null)
+                ? user.getRole().getName().name()
+                : "PATIENT"; // Default or throw meaningful exception
+
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + roleName);
 
         return new CustomUserDetails(
                 user.getId(),

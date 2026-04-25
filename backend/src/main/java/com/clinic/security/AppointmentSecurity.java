@@ -18,7 +18,7 @@ public class AppointmentSecurity {
         }
 
         UUID userId = userDetails.getId();
-        return appointmentRepository.findById(appointmentId)
+        return appointmentRepository.findByIdWithUser(appointmentId)
                 .map(appointment -> appointment.getPatient().getUser().getId().equals(userId) ||
                         appointment.getDoctor().getUser().getId().equals(userId))
                 .orElse(false);
