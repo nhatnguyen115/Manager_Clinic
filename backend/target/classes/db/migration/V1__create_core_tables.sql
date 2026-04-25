@@ -3,8 +3,8 @@
 -- Core tables: roles, users, specialties
 -- =====================================================
 
--- Enable UUID extension (Commented for H2 compatibility in tests)
--- CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- =====================================================
 -- ROLES TABLE
@@ -28,7 +28,7 @@ INSERT INTO roles (name, description) VALUES
 -- USERS TABLE
 -- =====================================================
 CREATE TABLE users (
-    id              UUID DEFAULT random_uuid() PRIMARY KEY,
+    id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     email           VARCHAR(255) NOT NULL UNIQUE,
     password_hash   VARCHAR(255) NOT NULL,
     full_name       VARCHAR(100) NOT NULL,
@@ -49,7 +49,7 @@ CREATE INDEX idx_users_role ON users(role_id);
 -- SPECIALTIES TABLE
 -- =====================================================
 CREATE TABLE specialties (
-    id              UUID DEFAULT random_uuid() PRIMARY KEY,
+    id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name            VARCHAR(100) NOT NULL UNIQUE,
     description     TEXT,
     icon            VARCHAR(100),

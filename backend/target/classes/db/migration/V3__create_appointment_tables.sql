@@ -38,7 +38,7 @@ CREATE INDEX idx_time_slots_schedule ON time_slots(schedule_id);
 -- APPOINTMENTS TABLE
 -- =====================================================
 CREATE TABLE appointments (
-    id                  UUID DEFAULT random_uuid() PRIMARY KEY,
+    id                  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     patient_id          UUID NOT NULL REFERENCES patients(id),
     doctor_id           UUID NOT NULL REFERENCES doctors(id),
     specialty_id        UUID REFERENCES specialties(id),

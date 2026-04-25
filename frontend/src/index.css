@@ -1,0 +1,395 @@
+@import './styles/design-system.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   ClinicPro - Global Styles
+   Design System: Medical Teal Dark Theme
+   ============================================ */
+
+/* CSS Variables from design-specs.md */
+:root {
+  color-scheme: dark;
+  /* Colors */
+  --color-primary: #0F766E;
+  --color-primary-light: #14B8A6;
+  --color-primary-dark: #0D5D57;
+
+  --color-bg-dark: #0A0F1A;
+  --color-bg-card: #111827;
+  --color-bg-surface: #1F2937;
+  --color-bg-elevated: #374151;
+
+  --color-text-primary: #F9FAFB;
+  --color-text-secondary: #D1D5DB;
+  --color-text-muted: #9CA3AF;
+  --color-text-disabled: #6B7280;
+
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-glow-primary: 0 0 20px rgba(15, 118, 110, 0.3);
+
+  /* Healthcare/Wellness Specifics */
+  --radius-wellness: 24px;
+  --shadow-wellness: 0 10px 40px -10px rgba(15, 118, 110, 0.2);
+  --shadow-soft-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+
+  /* Transitions */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Scrollbar styling (dark theme) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-card);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4B5563;
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+@layer components {
+
+  /* Button base */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-sm {
+    @apply px-4 py-2 text-xs h-8;
+  }
+
+  .btn-md {
+    @apply px-6 py-3 text-sm h-10;
+  }
+
+  .btn-lg {
+    @apply px-8 py-4 text-base h-12;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-500 active:bg-primary-800 hover:shadow-glow-primary;
+  }
+
+  .btn-secondary {
+    @apply bg-slate-800 text-gray-100 border border-slate-600 hover:bg-slate-700 hover:border-slate-500;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-gray-300 hover:bg-slate-800 hover:text-white;
+  }
+
+  .btn-danger {
+    @apply bg-error text-white hover:bg-red-600 active:bg-red-700;
+  }
+
+  /* Input base */
+  .input {
+    @apply w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-lg text-gray-100 placeholder-gray-500 transition-colors duration-150 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .input-error {
+    @apply border-error focus:border-error focus:ring-error/20;
+  }
+
+  /* Browser Native Overrides */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    @apply invert opacity-60 hover:opacity-100 transition-opacity cursor-pointer;
+  }
+
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    @apply invert opacity-60 hover:opacity-100 transition-opacity cursor-pointer;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-slate-900 border border-white/5 rounded-xl p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-pending {
+    @apply bg-warning/10 text-warning;
+  }
+
+  .badge-confirmed {
+    @apply bg-success/10 text-success;
+  }
+
+  .badge-completed {
+    @apply bg-info/10 text-info;
+  }
+
+  .badge-cancelled {
+    @apply bg-error/10 text-error;
+  }
+
+  /* Skeleton loading */
+  .skeleton {
+    @apply bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 bg-[length:200%_100%] animate-pulse rounded;
+  }
+
+  /* Custom Utilities for Chat */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 5px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-slate-700/50 rounded-full hover:bg-slate-600;
+  }
+}
+
+/* ============================================
+   Animation keyframes
+   ============================================ */
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in-bounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes soft-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(20, 184, 166, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(20, 184, 166, 0.25);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-soft-glow {
+  animation: soft-glow 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes count-up-pulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.95);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out both;
+}
+
+.animate-scale-in-bounce {
+  animation: scale-in-bounce 0.5s ease-out both;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+.animate-count-up {
+  animation: count-up-pulse 0.6s ease-out both;
+}
+
+/* Stagger children animations */
+.stagger-children>*:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.stagger-children>*:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.stagger-children>*:nth-child(3) {
+  animation-delay: 160ms;
+}
+
+.stagger-children>*:nth-child(4) {
+  animation-delay: 240ms;
+}
+
+.stagger-children>*:nth-child(5) {
+  animation-delay: 320ms;
+}
+
+/* Glass stat card */
+.glass-stat {
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.10) 0%, rgba(20, 184, 166, 0.05) 100%);
+  border: 1px solid rgba(20, 184, 166, 0.15);
+  backdrop-filter: blur(12px);
+}
+
+.glass-stat:hover {
+  border-color: rgba(20, 184, 166, 0.30);
+  box-shadow: 0 8px 32px rgba(15, 118, 110, 0.12);
+}
+
+/* Text gradient utility */
+.text-gradient {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-warm {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

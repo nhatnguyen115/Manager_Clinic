@@ -7,7 +7,7 @@
 -- NEWS TABLE
 -- =====================================================
 CREATE TABLE news (
-    id                  UUID DEFAULT random_uuid() PRIMARY KEY,
+    id                  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title               VARCHAR(255) NOT NULL,
     slug                VARCHAR(255) UNIQUE,
     content             TEXT NOT NULL,
@@ -50,7 +50,7 @@ CREATE INDEX idx_audit_logs_action ON audit_logs(action);
 -- REFRESH TOKENS TABLE
 -- =====================================================
 CREATE TABLE refresh_tokens (
-    id              UUID DEFAULT random_uuid() PRIMARY KEY,
+    id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token           VARCHAR(500) NOT NULL UNIQUE,
     device_info     VARCHAR(255),
