@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hủy lịch hẹn - ClinicPro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #2d3748;
+        }
+
+        .email-wrapper {
+            width: 100%;
+            background-color: #f4f7f9;
+            padding: 40px 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .email-header {
+            background: linear-gradient(135deg, #dc2626 0%, #9333ea 100%);
+            padding: 36px 40px;
+            text-align: center;
+        }
+
+        .email-header .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .email-header .logo span {
+            color: rgba(255, 255, 255, 0.75);
+            font-weight: 400;
+        }
+
+        .email-header .badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-top: 8px;
+            text-transform: uppercase;
+        }
+
+        .email-body {
+            padding: 40px;
+        }
+
+        .greeting {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .cancel-box {
+            background-color: #fff5f5;
+            border: 1px solid #feb2b2;
+            border-left: 4px solid #dc2626;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+
+        .cancel-row {
+            display: flex;
+            padding: 14px 20px;
+            border-bottom: 1px solid #feb2b2;
+        }
+
+        .cancel-row:last-child {
+            border-bottom: none;
+        }
+
+        .cancel-label {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 500;
+            width: 130px;
+            flex-shrink: 0;
+        }
+
+        .cancel-value {
+            font-size: 14px;
+            color: #1a202c;
+            font-weight: 600;
+            flex: 1;
+            text-align: right;
+        }
+
+        .cancel-value.red {
+            color: #dc2626;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 8px 0 4px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 14px 36px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .cta-note {
+            font-size: 13px;
+            color: #a0aec0;
+            margin-top: 16px;
+        }
+
+        .email-footer {
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 24px 40px;
+            text-align: center;
+        }
+
+        .footer-brand {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0d9488;
+            margin-bottom: 6px;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #a0aec0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <div class="email-header">
+                <div class="logo">Clinic<span>Pro</span></div>
+                <div class="badge">❌ Lịch hẹn đã hủy</div>
+            </div>
+            <div class="email-body">
+                <p class="greeting">Xin chào <strong th:text="${patientName}">Bệnh nhân</strong>,</p>
+                <p class="subtitle">Chúng tôi rất tiếc phải thông báo rằng lịch hẹn khám của bạn đã bị hủy.</p>
+                <div class="cancel-box">
+                    <div class="cancel-row">
+                        <div class="cancel-label">👨‍⚕️ Bác sĩ</div>
+                        <div class="cancel-value" th:text="${doctorName}">BS. Lê Thị Thảo</div>
+                    </div>
+                    <div class="cancel-row">
+                        <div class="cancel-label">📅 Ngày hẹn</div>
+                        <div class="cancel-value red" th:text="${dateTime}">08:00 - 2026-03-10</div>
+                    </div>
+                    <div class="cancel-row">
+                        <div class="cancel-label">📌 Lý do hủy</div>
+                        <div class="cancel-value red" th:text="${reason}">Bác sĩ bận việc đột xuất</div>
+                    </div>
+                </div>
+                <p style="font-size:15px; color:#4a5568; margin-bottom:28px;">Bạn có thể đặt lại một lịch hẹn mới phù
+                    hợp hơn. ClinicPro xin lỗi vì sự bất tiện này.</p>
+                <div class="cta-section">
+                    <a href="http://localhost:5173/booking/specialty" class="cta-button">Đặt lịch hẹn mới →</a>
+                    <p class="cta-note">ClinicPro xin lỗi vì sự bất tiện này và mong được phục vụ bạn sớm.</p>
+                </div>
+            </div>
+            <div class="email-footer">
+                <div class="footer-brand">ClinicPro</div>
+                <div class="footer-text">&#169; 2026 ClinicPro Management System. All rights reserved.<br>123 Medical
+                    Plaza, Ho Chi Minh City, Vietnam</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
