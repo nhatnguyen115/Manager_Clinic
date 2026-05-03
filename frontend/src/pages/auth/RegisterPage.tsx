@@ -10,6 +10,7 @@ const RegisterPage = () => {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
+        phone: '',
         password: '',
         confirmPassword: '',
     });
@@ -35,6 +36,7 @@ const RegisterPage = () => {
             await authService.register({
                 fullName: formData.fullName,
                 email: formData.email,
+                phone: formData.phone,
                 password: formData.password,
                 role: 'PATIENT' // Default to patient for public register
             });
@@ -65,6 +67,16 @@ const RegisterPage = () => {
                     type="email"
                     placeholder="name@example.com"
                     value={formData.email}
+                    onChange={handleChange}
+                    required
+                    fullWidth
+                />
+                <Input
+                    id="phone"
+                    label="Phone Number"
+                    type="tel"
+                    placeholder="0912345678"
+                    value={formData.phone}
                     onChange={handleChange}
                     required
                     fullWidth

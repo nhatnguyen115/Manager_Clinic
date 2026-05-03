@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nhắc lịch khám - ClinicPro</title>
+    <title>Sắp đến giờ khám - ClinicPro</title>
     <style>
         * {
             margin: 0;
@@ -191,15 +191,14 @@
         <div class="email-container">
             <div class="email-header">
                 <div class="logo">Clinic<span>Pro</span></div>
-                <div class="badge">⏰ Nhắc lịch khám ngày mai</div>
+                <div class="badge">🔔 Sắp đến giờ khám bệnh!</div>
             </div>
             <div class="email-body">
                 <p class="greeting">Xin chào <strong th:text="${patientName}">Bệnh nhân</strong>!</p>
-                <p class="subtitle">Đây là tin nhắn nhắc nhở về lịch hẹn khám <strong>ngày mai</strong> của bạn tại
-                    ClinicPro.</p>
+                <p class="subtitle">Lịch hẹn khám của bạn tại <strong>ClinicPro</strong> sẽ bắt đầu trong <strong>khoảng 20 phút nữa</strong>. Vui lòng chuẩn bị!</p>
                 <div class="reminder-banner">
-                    <div class="big-text">📅 Ngày mai!</div>
-                    <div class="small-text">Đừng quên lịch khám quan trọng của bạn</div>
+                    <div class="big-text">⏰ Còn ~20 phút nữa!</div>
+                    <div class="small-text">Hãy chuẩn bị đến phòng khám ngay</div>
                 </div>
                 <p class="section-title">Chi tiết lịch hẹn</p>
                 <div class="info-card">
@@ -216,8 +215,7 @@
                         <div class="info-value highlight" th:text="${date}">Ngày mai</div>
                     </div>
                 </div>
-                <p style="font-size:14px; color:#718096; margin-bottom:28px; line-height:1.6;">Vui lòng đến trước
-                    <strong>15 phút</strong> để làm thủ tục. Nếu không thể tham gia, vui lòng báo lại sớm nhất có thể.
+                <p style="font-size:14px; color:#718096; margin-bottom:28px; line-height:1.6;">Vui lòng <strong>lên đường ngay</strong> để đến phòng khám kịp giờ. Nếu có vấn đề, vui lòng liên hệ phòng khám sớm nhất có thể.
                 </p>
                 <div class="cta-section">
                     <a th:href="${appointmentLink}" class="cta-button">Quản lý lịch hẹn →</a>

@@ -21,8 +21,7 @@ CREATE TABLE roles (
 INSERT INTO roles (name, description) VALUES
     ('PATIENT', 'Bệnh nhân - Đặt lịch khám, xem hồ sơ'),
     ('DOCTOR', 'Bác sĩ - Quản lý lịch khám, tạo bệnh án'),
-    ('ADMIN', 'Quản trị viên - Toàn quyền'),
-    ('RECEPTIONIST', 'Lễ tân - Hỗ trợ đặt lịch');
+    ('ADMIN', 'Quản trị viên - Toàn quyền');
 
 -- =====================================================
 -- USERS TABLE

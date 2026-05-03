@@ -6,6 +6,5 @@ package com.clinic.entity.enums;
 public enum RoleName {
     PATIENT,
     DOCTOR,
-    ADMIN,
-    RECEPTIONIST
+    ADMIN
 }
