@@ -90,6 +90,7 @@ const SelectDoctorPage = () => {
                             rating={doctor.avgRating || 0}
                             reviewCount={doctor.totalReviews || 0}
                             location={doctor.bio || ''}
+                            avatarSrc={doctor.avatarUrl}
                             onViewReviews={() => setSelectedDoctorForReviews({ id: doctor.id, name: doctor.fullName })}
                             onClick={() => handleSelect(doctor.id)}
                         />

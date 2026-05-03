@@ -46,6 +46,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
 
         List<Appointment> findByAppointmentDateAndStatus(LocalDate date, AppointmentStatus status);
 
+        List<Appointment> findByAppointmentDateAndStatusAndAppointmentTimeBetween(LocalDate date, AppointmentStatus status, LocalTime startTime, LocalTime endTime);
+
         @Query("SELECT a FROM Appointment a " +
                         "JOIN FETCH a.patient p " +
                         "JOIN FETCH p.user " +

@@ -97,7 +97,6 @@ const EditUserModal = ({ isOpen, onClose, onSuccess, user }: EditUserModalProps)
                         >
                             <option value="PATIENT">Bệnh nhân</option>
                             <option value="DOCTOR">Bác sĩ</option>
-                            <option value="RECEPTIONIST">Lễ tân</option>
                             <option value="ADMIN">Quản trị viên</option>
                         </select>
                     </div>

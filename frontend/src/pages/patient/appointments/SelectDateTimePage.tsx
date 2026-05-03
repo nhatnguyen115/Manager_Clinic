@@ -58,8 +58,8 @@ const SelectDateTimePage = () => {
         });
 
         return {
-            morningSlots: morning,
-            afternoonSlots: afternoon,
+            morningSlots: morning.sort(),
+            afternoonSlots: afternoon.sort(),
             disabledSlots: disabledSet,
         };
     }, [slots]);

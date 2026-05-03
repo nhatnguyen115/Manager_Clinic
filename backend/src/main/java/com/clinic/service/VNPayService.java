@@ -72,7 +72,7 @@ public class VNPayService {
         String orderType = "other";
         String vnp_TxnRef = payment.getId().toString();
 
-        long amount = appointment.getDoctor().getConsultationFee().multiply(new BigDecimal(100)).longValue();
+        long amount = appointment.getActualFee().multiply(new BigDecimal(100)).longValue();
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);

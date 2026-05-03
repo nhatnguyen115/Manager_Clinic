@@ -105,7 +105,6 @@ const UsersListPage = () => {
             case 'ADMIN': return <Badge variant="error" size="sm">Admin</Badge>;
             case 'DOCTOR': return <Badge variant="primary" size="sm">Bác sĩ</Badge>;
             case 'PATIENT': return <Badge variant="success" size="sm">Bệnh nhân</Badge>;
-            case 'RECEPTIONIST': return <Badge variant="warning" size="sm">Lễ tân</Badge>;
             default: return <Badge variant="info" size="sm">{role}</Badge>;
         }
     };
@@ -115,8 +114,12 @@ const UsersListPage = () => {
             header: 'Người dùng',
             accessor: (u: UserResponse) => (
                 <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 rounded-full bg-slate-700 flex items-center justify-center font-bold text-primary-400 capitalize">
-                        {(u.fullName || 'U').charAt(0)}
+                    <div className="h-9 w-9 rounded-full bg-slate-700 flex items-center justify-center font-bold text-primary-400 capitalize overflow-hidden shrink-0">
+                        {u.avatarUrl ? (
+                            <img src={u.avatarUrl} alt={u.fullName} className="w-full h-full object-cover" />
+                        ) : (
+                            (u.fullName || 'U').charAt(0)
+                        )}
                     </div>
                     <span className="font-medium text-slate-50">{u.fullName || 'Unknown User'}</span>
                 </div>
@@ -231,7 +234,6 @@ const UsersListPage = () => {
                             <option value="PATIENT">Bệnh nhân</option>
                             <option value="DOCTOR">Bác sĩ</option>
                             <option value="ADMIN">Quản trị viên</option>
-                            <option value="RECEPTIONIST">Lễ tân</option>
                         </select>
                     </div>
                 </CardContent>
