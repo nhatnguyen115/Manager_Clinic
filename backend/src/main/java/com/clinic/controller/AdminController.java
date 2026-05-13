@@ -81,7 +81,7 @@ public class AdminController {
         public ApiResponse<Void> resetUserPassword(@PathVariable UUID id) {
                 adminService.resetUserPassword(id);
                 return ApiResponse.<Void>builder()
-                                .message("Password reset successfully")
+                                .message("Đặt lại mật khẩu thành công")
                                 .build();
         }
 

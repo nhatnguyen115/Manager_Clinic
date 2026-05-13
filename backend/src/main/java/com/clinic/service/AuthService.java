@@ -112,7 +112,7 @@ public class AuthService {
 
                 CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
                 User user = userRepository.findById(userDetails.getId())
-                                .orElseThrow(() -> new RuntimeException("User not found"));
+                                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
 
                 user.setLastLoginAt(LocalDateTime.now());
                 userRepository.save(user);
@@ -167,7 +167,7 @@ public class AuthService {
                                         return tokenProvider.generateToken(new UsernamePasswordAuthenticationToken(
                                                         userDetails, null, userDetails.getAuthorities()));
                                 })
-                                .orElseThrow(() -> new RuntimeException("Invalid or expired refresh token"));
+                                .orElseThrow(() -> new RuntimeException("Token làm mới không hợp lệ hoặc đã hết hạn"));
         }
 
         @Transactional
@@ -179,7 +179,7 @@ public class AuthService {
         public void forgotPassword(ForgotPasswordRequest request) {
                 String email = request.getEmail().trim().toLowerCase();
                 User user = userRepository.findByEmail(email)
-                                .orElseThrow(() -> new RuntimeException("Email not found"));
+                                .orElseThrow(() -> new RuntimeException("Không tìm thấy email"));
 
                 // Delete old tokens for this user
                 passwordResetTokenRepository.deleteByUser(user);
@@ -209,11 +209,11 @@ public class AuthService {
         @Transactional
         public void resetPassword(ResetPasswordRequest request) {
                 PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(request.getToken())
-                                .orElseThrow(() -> new RuntimeException("Invalid token"));
+                                .orElseThrow(() -> new RuntimeException("Token không hợp lệ"));
 
                 if (resetToken.isExpired()) {
                         passwordResetTokenRepository.delete(resetToken);
-                        throw new RuntimeException("Token expired");
+                        throw new RuntimeException("Token đã hết hạn");
                 }
 
                 User user = resetToken.getUser();

@@ -61,7 +61,7 @@ public class NotificationController {
                 notificationRepository.save(notification);
             }
         });
-        return ResponseEntity.ok(ApiResponse.<Void>builder().message("Marked as read").build());
+        return ResponseEntity.ok(ApiResponse.<Void>builder().message("Đã đánh dấu đã đọc").build());
     }
 
     @PatchMapping("/read-all")
@@ -69,13 +69,13 @@ public class NotificationController {
     public ResponseEntity<ApiResponse<Void>> markAllAsRead() {
         User user = getCurrentUser();
         notificationRepository.markAllAsReadByUserId(user.getId());
-        return ResponseEntity.ok(ApiResponse.<Void>builder().message("Marked all as read").build());
+        return ResponseEntity.ok(ApiResponse.<Void>builder().message("Đã đánh dấu tất cả đã đọc").build());
     }
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
     }
 }

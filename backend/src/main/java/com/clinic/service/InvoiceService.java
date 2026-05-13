@@ -91,7 +91,7 @@ public class InvoiceService {
 
         Payment payment = invoice.getPayment();
         if (payment.getStatus() == PaymentStatus.COMPLETED) {
-            throw new RuntimeException("Invoice already paid");
+            throw new RuntimeException("Hóa đơn đã được thanh toán rồi");
         }
 
         PaymentMethod method = PaymentMethod.CASH;

@@ -4,6 +4,7 @@ import com.clinic.dto.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
@@ -25,8 +26,12 @@ public class GlobalExceptionHandler {
         log.warn("AuthenticationException caught: {}", exception.getMessage());
         ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
 
+        // Specific handling for wrong password
+        if (exception instanceof BadCredentialsException) {
+            errorCode = ErrorCode.INVALID_CREDENTIALS;
+        }
         // Specific handling for locked/disabled accounts
-        if (exception instanceof org.springframework.security.authentication.DisabledException
+        else if (exception instanceof org.springframework.security.authentication.DisabledException
                 || exception instanceof org.springframework.security.authentication.LockedException) {
             errorCode = ErrorCode.USER_LOCKED;
         }
@@ -56,16 +61,15 @@ public class GlobalExceptionHandler {
         log.error("JSON Deserialization Error: ", exception);
         ErrorCode errorCode = ErrorCode.INVALID_KEY;
 
-        String message = "Invalid data format";
+        String message = "Định dạng dữ liệu không hợp lệ";
         if (exception.getCause() != null) {
             String causeMessage = exception.getCause().getMessage();
             if (causeMessage != null && causeMessage.contains("LocalDate")) {
-                message = "Invalid date format. Expected yyyy-MM-dd";
+                message = "Định dạng ngày không hợp lệ. Yêu cầu: yyyy-MM-dd";
             } else if (causeMessage != null && causeMessage.contains("UUID")) {
-                message = "Invalid UUID format";
+                message = "Định dạng UUID không hợp lệ";
             } else if (causeMessage != null) {
-                // Try to extract field name if available in the message
-                message = "Invalid data: "
+                message = "Dữ liệu không hợp lệ: "
                         + (causeMessage.length() > 100 ? causeMessage.substring(0, 100) + "..." : causeMessage);
             }
         }

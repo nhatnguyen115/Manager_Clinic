@@ -14,18 +14,20 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Điều phối chính cho AI Chatbot.
  * Quản lý hội thoại, System Prompt và thực thi Function Calling.
+ * Sử dụng OpenAI GPT-5.3 (thay thế Gemini trước đó).
  */
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ChatService {
 
-    private final GeminiService geminiService;
+    private final OpenAIService openAIService;
     private final ChatFunctionService chatFunctionService;
     private final SecurityUtils securityUtils;
     private final ObjectMapper objectMapper;
 
     // Lưu lịch sử hội thoại tạm thời trong bộ nhớ (Key: User ID)
+    // Format OpenAI: [{ "role": "user"/"assistant"/"tool", "content": "..." }]
     private final Map<UUID, List<Map<String, Object>>> chatHistoryMap = new ConcurrentHashMap<>();
 
     private static final int MAX_HISTORY_SIZE = 20;
@@ -42,8 +44,7 @@ public class ChatService {
         List<Map<String, Object>> originalHistory = chatHistoryMap.getOrDefault(userId, new ArrayList<>());
         List<Map<String, Object>> history = new ArrayList<>(originalHistory);
 
-        // Đảm bảo lịch sử ở trạng thái hợp lệ (phải bắt đầu bằng user và kết thúc bằng
-        // model response)
+        // Đảm bảo lịch sử ở trạng thái hợp lệ
         repairHistory(history);
 
         // 2. Định nghĩa System Instruction
@@ -51,12 +52,14 @@ public class ChatService {
         String clinicInfoHtml = "Tên: Phòng khám Đa khoa ClinicPro. Địa chỉ: 123 Đường Láng, Đống Đa, Hà Nội. Hotline: 0123-456-789. Giờ làm việc: Thứ 2 - Thứ 7 (7:30 - 20:30), Chủ nhật (8:00 - 17:00).";
 
         String systemInstruction = "Bạn là trợ lý ảo chính thức của phòng khám Đa khoa ClinicPro. " +
-                "Nhiệm vụ của bạn là hỗ trợ bệnh nhân giải đáp thắc mắc về chuyên khoa, bác sĩ, lịch làm việc, tra cứu thuốc và xem lịch hẹn cá nhân. " +
+                "Nhiệm vụ của bạn là hỗ trợ bệnh nhân giải đáp thắc mắc về chuyên khoa, bác sĩ, lịch làm việc, tra cứu thuốc và xem lịch hẹn cá nhân. "
+                +
                 "Hãy trả lời thân thiện, chuyên nghiệp, bằng tiếng Việt. " +
-                "\n\nTHÔNG TIN PHÒNG KHÁM:\n" + clinicInfoHtml + 
+                "\n\nTHÔNG TIN PHÒNG KHÁM:\n" + clinicInfoHtml +
                 "\n\nDANH SÁCH CHUYÊN KHOA:\n" + specialtiesInfo +
                 "\n\nQuan trọng: Chỉ trả lời dữ liệu về Chuyên khoa và Thông tin chung dựa trên thông tin trên. " +
-                "Chỉ gọi hàm (functions) khi cần tìm Bác sĩ cụ thể, xem Lịch làm việc, Tra cứu thuốc hoặc Lịch hẹn cá nhân. " +
+                "Chỉ gọi hàm (functions) khi cần tìm Bác sĩ cụ thể, xem Lịch làm việc, Tra cứu thuốc hoặc Lịch hẹn cá nhân. "
+                +
                 "Nếu không tìm thấy dữ liệu, hãy báo người dùng liên hệ hotline. " +
                 "Nếu người dùng hỏi vấn đề không liên quan đến y tế hoặc phòng khám, hãy từ chối lịch sự.";
 
@@ -66,60 +69,80 @@ public class ChatService {
         try {
             log.debug("Current history size for {}: {}", userId, history.size());
 
-            // 4. Gọi Gemini lần đầu
-            String response = geminiService.chat(userMsg, systemInstruction, history, functions);
+            // 4. Gọi OpenAI lần đầu
+            String response = openAIService.chat(userMsg, systemInstruction, history, functions);
 
-            boolean hadFunctionCall = geminiService.isFunctionCall(response);
+            boolean hadFunctionCall = openAIService.isFunctionCall(response);
 
-            // 5. Vòng lặp xử lý Function Calling (nếu có)
+            // 5. Vòng lặp xử lý Tool Calling (nếu có)
             int loopCount = 0;
             if (hadFunctionCall) {
-                // Thêm tin nhắn user vào lịch sử ngay khi biết sẽ có Function Call
-                history.add(Map.of("role", "user", "parts", List.of(Map.of("text", userMsg))));
+                // Thêm tin nhắn user vào lịch sử ngay khi biết sẽ có Tool Call
+                Map<String, Object> userEntry = new HashMap<>();
+                userEntry.put("role", "user");
+                userEntry.put("content", userMsg);
+                history.add(userEntry);
             }
 
-            while (geminiService.isFunctionCall(response) && loopCount < 5) {
-                // Lưu message role: model (với functionCall) vào lịch sử
-                Map<String, Object> assistantPart = Map.of(
-                        "role", "model",
-                        "parts", List.of(objectMapper.readTree(response)));
-                history.add(assistantPart);
-
-                Map<String, Object> call = geminiService.parseFunctionCall(response);
+            while (openAIService.isFunctionCall(response) && loopCount < 5) {
+                Map<String, Object> call = openAIService.parseFunctionCall(response);
+                String toolCallId = (String) call.get("id");
                 String functionName = (String) call.get("name");
-                
+
                 @SuppressWarnings("unchecked")
                 Map<String, Object> args = (Map<String, Object>) call.get("args");
 
-                log.info("Gemini requested function: {} with args: {}", functionName, args);
+                log.info("OpenAI requested function: {} with args: {}", functionName, args);
+
+                // Lưu assistant message (tool_calls) vào lịch sử
+                Map<String, Object> assistantEntry = new HashMap<>();
+                assistantEntry.put("role", "assistant");
+                assistantEntry.put("content", null); // content null khi có tool_calls
+
+                // Build tool_calls array cho assistant message
+                List<Map<String, Object>> toolCallsList = new ArrayList<>();
+                Map<String, Object> toolCallEntry = new HashMap<>();
+                toolCallEntry.put("id", toolCallId);
+                toolCallEntry.put("type", "function");
+                Map<String, Object> functionEntry = new HashMap<>();
+                functionEntry.put("name", functionName);
+                functionEntry.put("arguments", objectMapper.writeValueAsString(args));
+                toolCallEntry.put("function", functionEntry);
+                toolCallsList.add(toolCallEntry);
+                assistantEntry.put("tool_calls", toolCallsList);
+                history.add(assistantEntry);
 
                 // Thực thi hàm Java tương ứng
                 Object result = executeFunction(functionName, args);
                 String resultJson = objectMapper.writeValueAsString(result);
 
-                // Gửi kết quả về cho Gemini (GeminiService sẽ thêm role: function vào contents)
-                response = geminiService.sendFunctionResult(functionName, resultJson, systemInstruction, history,
-                        functions);
+                // Lưu tool result vào lịch sử
+                Map<String, Object> toolResultEntry = new HashMap<>();
+                toolResultEntry.put("role", "tool");
+                toolResultEntry.put("tool_call_id", toolCallId);
+                toolResultEntry.put("content", resultJson);
+                history.add(toolResultEntry);
 
-                // Lưu kết quả function vào lịch sử sau khi gọi xong để các lượt sau có dữ liệu
-                Map<String, Object> functionPart = Map.of(
-                        "role", "function",
-                        "parts", List.of(Map.of(
-                                "functionResponse", Map.of(
-                                        "name", functionName,
-                                        "response", Map.of("result", result)))));
-                history.add(functionPart);
+                // Gửi kết quả về cho OpenAI
+                response = openAIService.sendFunctionResult(
+                        toolCallId, functionName, resultJson, systemInstruction, history, functions);
 
                 loopCount++;
             }
 
             // 6. Cập nhật lịch sử hội thoại (lưu text response cuối cùng)
             if (!hadFunctionCall) {
-                history.add(Map.of("role", "user", "parts", List.of(Map.of("text", userMsg))));
+                Map<String, Object> userEntry = new HashMap<>();
+                userEntry.put("role", "user");
+                userEntry.put("content", userMsg);
+                history.add(userEntry);
             }
-            history.add(Map.of("role", "model", "parts", List.of(Map.of("text", response))));
+            Map<String, Object> assistantEntry = new HashMap<>();
+            assistantEntry.put("role", "assistant");
+            assistantEntry.put("content", response);
+            history.add(assistantEntry);
 
-            // Giới hạn số lượng tin nhắn trong lịch sử và đảm bảo bắt đầu bằng User
+            // Giới hạn số lượng tin nhắn trong lịch sử
             truncateHistory(history);
 
             // 7. Lưu lại lịch sử đã cập nhật thành công
@@ -134,36 +157,36 @@ public class ChatService {
         }
     }
 
+    /**
+     * Repair history để đảm bảo trạng thái hợp lệ cho OpenAI.
+     * OpenAI yêu cầu: user → assistant → tool (nếu có) → assistant ...
+     * Lịch sử hợp lệ PHẢI kết thúc bằng assistant message có content (text).
+     */
     private void repairHistory(List<Map<String, Object>> history) {
         if (history.isEmpty())
             return;
-
-        // Gemini yêu cầu: User -> Model -> Function -> Model...
-        // Lịch sử hơp lệ PHẢI kết thúc bằng một Model turn (text response).
-        // Nếu kết thúc bằng Function hoặc Model(Call), nghĩa là lượt trước bị lỗi nửa
-        // chừng -> Xóa bỏ turn dở dang.
 
         while (!history.isEmpty()) {
             Map<String, Object> last = history.get(history.size() - 1);
             String role = (String) last.get("role");
 
-            if ("model".equals(role)) {
-                @SuppressWarnings("unchecked")
-                List<Map<String, Object>> parts = (List<Map<String, Object>>) last.get("parts");
-                if (parts != null && !parts.isEmpty() && parts.get(0).containsKey("text")) {
-                    // Kết thúc bằng model text -> Hợp lệ
+            if ("assistant".equals(role)) {
+                // Kiểm tra assistant có content text không (không phải tool_calls)
+                Object content = last.get("content");
+                if (content != null && content instanceof String && !((String) content).isEmpty()) {
+                    // Kết thúc bằng assistant text → Hợp lệ
                     break;
                 } else {
-                    // Kết thúc bằng model functionCall -> Không hợp lệ để bắt đầu lượt mới
-                    log.warn("Removing incomplete model functionCall from history");
+                    // Kết thúc bằng assistant tool_calls → Không hợp lệ
+                    log.warn("Removing incomplete assistant tool_calls from history");
                     history.remove(history.size() - 1);
                 }
-            } else if ("function".equals(role)) {
-                // Kết thúc bằng function response nhưng chưa có model text -> Không hợp lệ
-                log.warn("Removing orphaned function response from history");
+            } else if ("tool".equals(role)) {
+                // Kết thúc bằng tool response nhưng chưa có assistant text → Không hợp lệ
+                log.warn("Removing orphaned tool response from history");
                 history.remove(history.size() - 1);
             } else if ("user".equals(role)) {
-                // Kết thúc bằng user nhưng chưa có model response -> Không hợp lệ
+                // Kết thúc bằng user nhưng chưa có assistant response → Không hợp lệ
                 log.warn("Removing orphaned user message from history");
                 history.remove(history.size() - 1);
             } else {
@@ -202,7 +225,9 @@ public class ChatService {
     }
 
     /**
-     * Định nghĩa Metadata cho các Function để gửi cho Gemini.
+     * Định nghĩa Metadata cho các Function để gửi cho OpenAI.
+     * Format tương thích cả Gemini và OpenAI (OpenAIService sẽ wrap thêm "type":
+     * "function").
      */
     private List<Map<String, Object>> getFunctionDeclarations() {
         List<Map<String, Object>> declarations = new ArrayList<>();

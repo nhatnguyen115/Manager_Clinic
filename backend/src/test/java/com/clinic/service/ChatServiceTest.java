@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.clinic.util.SecurityUtils;
-import com.clinic.repository.*;
 
 import java.util.*;
 
@@ -18,7 +17,7 @@ class ChatServiceTest {
     @InjectMocks
     private ChatService chatService;
 
-    @Mock private GeminiService geminiService;
+    @Mock private OpenAIService openAIService;
     @Mock private ChatFunctionService chatFunctionService;
     @Mock private SecurityUtils securityUtils;
     @Mock private ObjectMapper objectMapper;
@@ -34,26 +33,55 @@ class ChatServiceTest {
         java.lang.reflect.Method repairMethod = ChatService.class.getDeclaredMethod("repairHistory", List.class);
         repairMethod.setAccessible(true);
 
-        // Case 1: Incomplete model turn (functionCall instead of text)
+        // Case 1: Incomplete assistant turn (tool_calls instead of text content)
         List<Map<String, Object>> history1 = new ArrayList<>();
-        history1.add(Map.of("role", "user", "parts", List.of(Map.of("text", "Hi"))));
-        history1.add(Map.of("role", "model", "parts", List.of(Map.of("functionCall", Map.of("name", "test")))));
+        Map<String, Object> userMsg1 = new HashMap<>();
+        userMsg1.put("role", "user");
+        userMsg1.put("content", "Hi");
+        history1.add(userMsg1);
+
+        Map<String, Object> assistantMsg1 = new HashMap<>();
+        assistantMsg1.put("role", "assistant");
+        assistantMsg1.put("content", null); // tool_calls response has null content
+        assistantMsg1.put("tool_calls", List.of(Map.of("id", "call_123", "type", "function")));
+        history1.add(assistantMsg1);
         
         repairMethod.invoke(chatService, history1);
         
-        assertEquals(0, history1.size(), "Should remove both model call and orphaned user message");
+        assertEquals(0, history1.size(), "Should remove both assistant call and orphaned user message");
 
-        // Case 2: Orphaned function response
+        // Case 2: Orphaned tool response
         List<Map<String, Object>> history2 = new ArrayList<>();
-        history2.add(Map.of("role", "user", "parts", List.of(Map.of("text", "Hi"))));
-        history2.add(Map.of("role", "model", "parts", List.of(Map.of("text", "Hello"))));
-        history2.add(Map.of("role", "user", "parts", List.of(Map.of("text", "Call func"))));
-        history2.add(Map.of("role", "model", "parts", List.of(Map.of("functionCall", Map.of("name", "test")))));
-        history2.add(Map.of("role", "function", "parts", List.of(Map.of("text", "result"))));
+        Map<String, Object> userMsg2 = new HashMap<>();
+        userMsg2.put("role", "user");
+        userMsg2.put("content", "Hi");
+        history2.add(userMsg2);
+
+        Map<String, Object> assistantMsg2 = new HashMap<>();
+        assistantMsg2.put("role", "assistant");
+        assistantMsg2.put("content", "Hello");
+        history2.add(assistantMsg2);
+
+        Map<String, Object> userMsg3 = new HashMap<>();
+        userMsg3.put("role", "user");
+        userMsg3.put("content", "Call func");
+        history2.add(userMsg3);
+
+        Map<String, Object> assistantMsg3 = new HashMap<>();
+        assistantMsg3.put("role", "assistant");
+        assistantMsg3.put("content", null);
+        assistantMsg3.put("tool_calls", List.of(Map.of("id", "call_456", "type", "function")));
+        history2.add(assistantMsg3);
+
+        Map<String, Object> toolMsg = new HashMap<>();
+        toolMsg.put("role", "tool");
+        toolMsg.put("tool_call_id", "call_456");
+        toolMsg.put("content", "result");
+        history2.add(toolMsg);
         
         repairMethod.invoke(chatService, history2);
         
-        assertEquals(2, history2.size(), "Should remove everything until the last complete model text turn");
+        assertEquals(2, history2.size(), "Should remove everything until the last complete assistant text turn");
     }
 
     @Test
@@ -64,13 +92,22 @@ class ChatServiceTest {
         List<Map<String, Object>> history = new ArrayList<>();
         // Add 5 turns (10 messages)
         for (int i = 0; i < 5; i++) {
-            history.add(Map.of("role", "user", "parts", List.of(Map.of("text", "U" + i))));
-            history.add(Map.of("role", "model", "parts", List.of(Map.of("text", "M" + i))));
+            Map<String, Object> userMsg = new HashMap<>();
+            userMsg.put("role", "user");
+            userMsg.put("content", "U" + i);
+            history.add(userMsg);
+
+            Map<String, Object> assistantMsg = new HashMap<>();
+            assistantMsg.put("role", "assistant");
+            assistantMsg.put("content", "M" + i);
+            history.add(assistantMsg);
         }
 
-        // Set MAX_HISTORY_SIZE is private 20, let's just test the logic with a large one manually if needed
-        // But the first turn must be "user" check is easy
-        history.add(0, Map.of("role", "model", "parts", List.of(Map.of("text", "Bad start"))));
+        // Add a bad start (assistant message first)
+        Map<String, Object> badStart = new HashMap<>();
+        badStart.put("role", "assistant");
+        badStart.put("content", "Bad start");
+        history.add(0, badStart);
         
         truncateMethod.invoke(chatService, history);
         

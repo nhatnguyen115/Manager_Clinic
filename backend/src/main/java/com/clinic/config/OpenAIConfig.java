@@ -9,33 +9,38 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.Getter;
 
+/**
+ * Cấu hình kết nối OpenAI API (GPT-5.3).
+ * Thay thế GeminiConfig trước đó.
+ */
 @Configuration
 @Getter
-public class GeminiConfig {
+public class OpenAIConfig {
 
-    @Value("${app.gemini.api-key}")
+    @Value("${app.openai.api-key}")
     private String apiKey;
 
-    @Value("${app.gemini.model:gemini-2.0-flash}")
+    @Value("${app.openai.model:gpt-5.3}")
     private String model;
 
-    @Value("${app.gemini.base-url:https://generativelanguage.googleapis.com/v1beta}")
+    @Value("${app.openai.base-url:https://api.openai.com/v1}")
     private String baseUrl;
 
-    @Value("${app.gemini.timeout:30}")
+    @Value("${app.openai.timeout:60}")
     private int timeoutSeconds;
 
-    @Value("${app.gemini.max-tokens:2048}")
+    @Value("${app.openai.max-tokens:4096}")
     private int maxTokens;
 
-    @Bean("geminiWebClient")
-    public WebClient geminiWebClient() {
+    @Bean("openaiWebClient")
+    public WebClient openaiWebClient() {
         return WebClient.builder()
                 .baseUrl(baseUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                 .codecs(configurer -> configurer
                         .defaultCodecs()
-                        .maxInMemorySize(2 * 1024 * 1024)) // 2MB buffer
+                        .maxInMemorySize(4 * 1024 * 1024)) // 4MB buffer
                 .build();
     }
 }
