@@ -54,7 +54,7 @@ public class UserController {
             @Valid @RequestBody PasswordChangeRequest request) {
         userService.changePassword(userDetails.getId(), request);
         return ApiResponse.<Void>builder()
-                .message("Password changed successfully")
+                .message("Đổi mật khẩu thành công")
                 .build();
     }
 }

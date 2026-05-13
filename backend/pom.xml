@@ -159,7 +159,7 @@
             <version>5.2.5</version>
         </dependency>
 
-        <!-- WebFlux (WebClient for Gemini API calls) -->
+        <!-- WebFlux (WebClient for OpenAI API calls) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>

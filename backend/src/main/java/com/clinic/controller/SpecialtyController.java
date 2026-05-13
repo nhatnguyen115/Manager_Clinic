@@ -63,7 +63,7 @@ public class SpecialtyController {
     public ApiResponse<Void> deleteSpecialty(@PathVariable UUID id) {
         specialtyService.deleteSpecialty(id);
         return ApiResponse.<Void>builder()
-                .message("Specialty deactivated successfully")
+                .message("Đã tắt chuyên khoa thành công")
                 .build();
     }
 }

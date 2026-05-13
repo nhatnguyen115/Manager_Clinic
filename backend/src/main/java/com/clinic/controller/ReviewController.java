@@ -49,7 +49,7 @@ public class ReviewController {
     public ApiResponse<Void> deleteReview(@PathVariable UUID id) {
         reviewService.deleteReview(id);
         return ApiResponse.<Void>builder()
-                .message("Review deleted successfully")
+                .message("Đã xóa đánh giá thành công")
                 .build();
     }
 }

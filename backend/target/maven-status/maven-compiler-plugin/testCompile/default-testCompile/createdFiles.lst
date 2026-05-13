@@ -1,6 +1,7 @@
 com\clinic\controller\AppointmentControllerIT.class
 com\clinic\controller\PatientControllerIT.class
 com\clinic\controller\UserControllerIT.class
+com\clinic\service\ChatFunctionServiceTest.class
 com\clinic\service\UserServiceTest.class
 com\clinic\controller\DoctorControllerIT.class
 com\clinic\controller\MedicalRecordControllerIT.class
@@ -15,3 +16,4 @@ com\clinic\security\jwt\JwtTokenProviderTest.class
 com\clinic\controller\AdminControllerIT.class
 com\clinic\ClinicApplicationTests.class
 com\clinic\service\AdminServiceTest.class
+com\clinic\service\ChatServiceTest.class

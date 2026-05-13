@@ -98,7 +98,6 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\ResetPasswordReque
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\LoginRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\ChatResponse.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\enums\Gender.java
-D:\ManagerClinic\backend\src\main\java\com\clinic\config\GeminiConfig.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\AppointmentRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\PatientRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\DoctorResponse.java
@@ -114,13 +113,13 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\TimeSlotRequest.ja
 D:\ManagerClinic\backend\src\main\java\com\clinic\controller\ReviewController.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\User.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\security\CustomUserDetails.java
-D:\ManagerClinic\backend\src\main\java\com\clinic\service\GeminiService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\controller\ChatController.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\request\ScheduleUpdateRequest.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\DoctorRepository.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\RefreshTokenRepository.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\VNPayService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\repository\AuditLogRepository.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\service\OpenAIService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\service\ChatService.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\ReportResponse.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\PasswordResetToken.java
@@ -135,6 +134,7 @@ D:\ManagerClinic\backend\src\main\java\com\clinic\scheduler\ReminderScheduler.ja
 D:\ManagerClinic\backend\src\main\java\com\clinic\config\SwaggerConfig.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\PaymentResponse.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\security\annotation\RequirePatient.java
+D:\ManagerClinic\backend\src\main\java\com\clinic\config\OpenAIConfig.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\dto\response\AppointmentResponse.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\Medicine.java
 D:\ManagerClinic\backend\src\main\java\com\clinic\entity\enums\PaymentStatus.java
