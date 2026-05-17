@@ -15,5 +15,4 @@ com\clinic\exception\GlobalExceptionHandlerTest.class
 com\clinic\security\jwt\JwtTokenProviderTest.class
 com\clinic\controller\AdminControllerIT.class
 com\clinic\ClinicApplicationTests.class
-com\clinic\service\AdminServiceTest.class
 com\clinic\service\ChatServiceTest.class

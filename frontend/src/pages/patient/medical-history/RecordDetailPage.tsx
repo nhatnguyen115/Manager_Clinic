@@ -74,7 +74,7 @@ const RecordDetailPage = () => {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="p-0 text-slate-400 hover:text-slate-200"
+                        className="p-0 text-slate-400 hover:text-slate-200 print:hidden"
                         onClick={() => navigate('/medical-history')}
                     >
                         <ArrowLeft size={16} className="mr-1" /> Quay lại lịch sử
@@ -86,11 +86,11 @@ const RecordDetailPage = () => {
                     <p className="text-slate-400 text-lg">Ngày khám: {recordDate}</p>
                 </div>
 
-                <div className="flex gap-3">
-                    <Button variant="outline" size="sm" className="gap-2">
+                <div className="flex gap-3 print:hidden">
+                    <Button variant="outline" size="sm" className="gap-2" onClick={() => window.print()}>
                         <Printer size={16} /> In
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-2">
+                    <Button variant="outline" size="sm" className="gap-2" onClick={() => window.print()}>
                         <FileDown size={16} /> Tải PDF
                     </Button>
                 </div>
@@ -177,7 +177,7 @@ const RecordDetailPage = () => {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="p-0 text-primary-500 mt-4 hover:bg-transparent hover:text-primary-400"
+                                className="p-0 text-primary-500 mt-4 hover:bg-transparent hover:text-primary-400 print:hidden"
                                 onClick={() => setShowDoctorModal(true)}
                             >
                                 Xem hồ sơ bác sĩ
@@ -198,7 +198,7 @@ const RecordDetailPage = () => {
                         </Card>
                     )}
 
-                    <Card className="bg-primary-900/10 border-primary-500/20">
+                    <Card className="bg-primary-900/10 border-primary-500/20 print:hidden">
                         <CardContent className="p-6 text-center">
                             <h4 className="font-bold text-slate-50 mb-2">Buổi khám thế nào?</h4>
                             <p className="text-xs text-slate-400 mb-4">Chia sẻ trải nghiệm giúp người khác chọn được dịch vụ tốt hơn.</p>

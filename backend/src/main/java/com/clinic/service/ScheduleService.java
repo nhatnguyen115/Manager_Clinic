@@ -85,23 +85,54 @@ public class ScheduleService {
 
                 // Update or Create slots from request
                 for (TimeSlotRequest req : requests) {
-                        TimeSlot slot = existingSlots.stream()
-                                        .filter(s -> s.getStartTime().equals(req.getStartTime())
-                                                        && s.getEndTime().equals(req.getEndTime()))
-                                        .findFirst()
-                                        .orElseGet(() -> TimeSlot.builder()
-                                                        .schedule(schedule)
-                                                        .startTime(req.getStartTime())
-                                                        .endTime(req.getEndTime())
-                                                        .build());
+                        TimeSlot slot = null;
+                        
+                        // First try to match by ID
+                        if (req.getId() != null) {
+                                slot = existingSlots.stream()
+                                                .filter(s -> s.getId().equals(req.getId()))
+                                                .findFirst()
+                                                .orElse(null);
+                        }
+                        
+                        // Fallback to matching by exact time if no ID provided
+                        if (slot == null) {
+                                slot = existingSlots.stream()
+                                                .filter(s -> s.getStartTime().equals(req.getStartTime())
+                                                                && s.getEndTime().equals(req.getEndTime()))
+                                                .findFirst()
+                                                .orElseGet(() -> TimeSlot.builder()
+                                                                .schedule(schedule)
+                                                                .build());
+                        }
 
+                        slot.setStartTime(req.getStartTime());
+                        slot.setEndTime(req.getEndTime());
                         slot.setMaxPatients(req.getMaxPatients());
                         slot.setIsAvailable(req.getIsAvailable());
                         timeSlotRepository.save(slot);
                 }
 
-                // We don't delete slots that are not in the request to prevent FK violations
-                // if they have appointments.
+                // Handle slots that were removed from the request
+                java.util.Set<Integer> requestSlotIds = requests.stream()
+                                .map(TimeSlotRequest::getId)
+                                .filter(java.util.Objects::nonNull)
+                                .collect(Collectors.toSet());
+
+                List<TimeSlot> slotsToRemove = existingSlots.stream()
+                                .filter(s -> !requestSlotIds.contains(s.getId()))
+                                .collect(Collectors.toList());
+
+                for (TimeSlot slot : slotsToRemove) {
+                        try {
+                                timeSlotRepository.delete(slot);
+                                timeSlotRepository.flush();
+                        } catch (Exception e) {
+                                // If it has appointments (FK violation), just disable it
+                                slot.setIsAvailable(false);
+                                timeSlotRepository.save(slot);
+                        }
+                }
         }
 
         private ScheduleResponse mapToResponse(WorkingSchedule schedule) {

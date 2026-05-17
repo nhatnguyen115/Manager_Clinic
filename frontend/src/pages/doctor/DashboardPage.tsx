@@ -50,7 +50,7 @@ const DoctorDashboardPage = () => {
             const [aptsData, statsData, reviewsData] = await Promise.allSettled([
                 getTodayAppointments(),
                 getDashboardStats(),
-                user?.id ? getDoctorReviews(user.id) : Promise.resolve([]),
+                user?.doctorId ? getDoctorReviews(user.doctorId) : Promise.resolve([]),
             ]);
 
             if (aptsData.status === 'fulfilled') setTodayApts(aptsData.value);

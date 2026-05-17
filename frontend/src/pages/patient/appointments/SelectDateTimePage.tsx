@@ -13,7 +13,7 @@ import { SlotSkeleton } from '@components/appointments/BookingSkeletons';
 const SelectDateTimePage = () => {
     const { specialtyId, doctorId } = useParams<{ specialtyId: string; doctorId: string }>();
     const navigate = useNavigate();
-    const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+    const [selectedDate, setSelectedDate] = useState<string>(new Date().toLocaleDateString('en-CA'));
     const [selectedSlot, setSelectedSlot] = useState<string>();
     const [selectedSlotId, setSelectedSlotId] = useState<number>();
     const [slots, setSlots] = useState<TimeSlotResponse[]>([]);
@@ -38,21 +38,37 @@ const SelectDateTimePage = () => {
         load();
     }, [doctorId, selectedDate]);
 
-    // Split into AM/PM groups
-    const { morningSlots, afternoonSlots } = useMemo(() => {
+    // Split into AM/PM groups and determine disabled slots
+    const { morningSlots, afternoonSlots, disabledSlots } = useMemo(() => {
         const morning: string[] = [];
         const afternoon: string[] = [];
         const disabledSet = new Set<string>();
 
+        const now = new Date();
+        const currentDateStr = now.toLocaleDateString('en-CA'); // gets YYYY-MM-DD in local time
+        const isToday = selectedDate === currentDateStr;
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
         slots.forEach(s => {
             const time = s.startTime; // "HH:mm"
             const hour = parseInt(time.split(':')[0], 10);
+            const minute = parseInt(time.split(':')[1], 10);
+            
             if (hour < 12) {
                 morning.push(time);
             } else {
                 afternoon.push(time);
             }
-            if (!s.isAvailable) {
+
+            let isPast = false;
+            if (isToday) {
+                if (hour < currentHour || (hour === currentHour && minute <= currentMinute)) {
+                    isPast = true;
+                }
+            }
+
+            if (!s.isAvailable || isPast) {
                 disabledSet.add(time);
             }
         });
@@ -60,14 +76,9 @@ const SelectDateTimePage = () => {
         return {
             morningSlots: morning.sort(),
             afternoonSlots: afternoon.sort(),
-            disabledSlots: disabledSet,
+            disabledSlots: Array.from(disabledSet),
         };
-    }, [slots]);
-
-    const disabledSlots = useMemo(() =>
-        slots.filter(s => !s.isAvailable).map(s => s.startTime),
-        [slots]
-    );
+    }, [slots, selectedDate]);
 
     const handleSlotSelect = (time: string) => {
         setSelectedSlot(time);
@@ -121,7 +132,7 @@ const SelectDateTimePage = () => {
                                 type="date"
                                 className="w-full bg-slate-800 border-2 border-slate-700 rounded-2xl px-5 py-4 text-slate-50 font-bold focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 outline-none transition-all cursor-pointer"
                                 value={selectedDate}
-                                min={new Date().toISOString().split('T')[0]}
+                                min={new Date().toLocaleDateString('en-CA')}
                                 onChange={(e) => setSelectedDate(e.target.value)}
                             />
                             <div className="mt-8 space-y-4">

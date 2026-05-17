@@ -43,6 +43,20 @@ const generateDefaultSchedule = (): Schedule[] => {
     }));
 };
 
+// ============ Time Helpers ============
+const timeToMins = (time: string) => {
+    const [h, m] = time.split(':').map(Number);
+    return h * 60 + m;
+};
+
+const minsToTime = (mins: number) => {
+    // Cap at 23:59 (1439 minutes) to avoid "24:00" invalid time format
+    const safeMins = Math.min(mins, 1439);
+    const h = Math.floor(safeMins / 60);
+    const m = safeMins % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+};
+
 // ============ Tabs ============
 type TabId = 'weekly' | 'timeslots' | 'leave';
 
@@ -120,14 +134,40 @@ const SchedulePage = () => {
 
     // Update time slot
     const updateSlot = useCallback((dayOfWeek: number, slotIndex: number, updates: Partial<ScheduleTimeSlot>) => {
-        setSchedule(prev => prev.map(s =>
-            s.dayOfWeek === dayOfWeek
-                ? {
-                    ...s,
-                    timeSlots: s.timeSlots.map((slot, i) => i === slotIndex ? { ...slot, ...updates } : slot),
+        setSchedule(prev => prev.map(s => {
+            if (s.dayOfWeek !== dayOfWeek) return s;
+
+            const newSlots = [...s.timeSlots];
+            
+            // First update the target slot
+            newSlots[slotIndex] = { ...newSlots[slotIndex], ...updates };
+
+            // Then cascade the changes to subsequent slots if they overlap
+            for (let i = slotIndex; i < newSlots.length - 1; i++) {
+                const currentSlot = newSlots[i];
+                const nextSlot = newSlots[i + 1];
+                
+                const currentEndMins = timeToMins(currentSlot.endTime);
+                const nextStartMins = timeToMins(nextSlot.startTime);
+                
+                // If current slot ends after next slot starts, we have an overlap!
+                if (currentEndMins > nextStartMins) {
+                    const nextDurationMins = timeToMins(nextSlot.endTime) - nextStartMins;
+                    const validDuration = nextDurationMins > 0 ? nextDurationMins : 30; // fallback to 30m
+                    
+                    newSlots[i + 1] = {
+                        ...nextSlot,
+                        startTime: currentSlot.endTime,
+                        endTime: minsToTime(currentEndMins + validDuration)
+                    };
+                } else {
+                    // No overlap, cascade stops here
+                    break;
                 }
-                : s
-        ));
+            }
+
+            return { ...s, timeSlots: newSlots };
+        }));
         markChanged();
     }, []);
 
@@ -136,9 +176,17 @@ const SchedulePage = () => {
         setSchedule(prev => prev.map(s => {
             if (s.dayOfWeek !== dayOfWeek) return s;
             const lastSlot = s.timeSlots[s.timeSlots.length - 1];
+            
             const newStart = lastSlot ? lastSlot.endTime : '08:00';
-            const [h, m] = newStart.split(':').map(Number);
-            const newEnd = `${String(h + (m >= 30 ? 1 : 0)).padStart(2, '0')}:${m >= 30 ? '00' : '30'}`;
+            const startMins = timeToMins(newStart);
+            
+            // If already at end of day, don't add
+            if (startMins >= 1439) {
+                return s;
+            }
+            
+            const newEnd = minsToTime(startMins + 30);
+            
             return {
                 ...s,
                 timeSlots: [...s.timeSlots, { startTime: newStart, endTime: newEnd, maxPatients: 1, isAvailable: true }],

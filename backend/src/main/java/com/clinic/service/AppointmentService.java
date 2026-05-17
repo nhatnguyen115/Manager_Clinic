@@ -152,8 +152,13 @@ public class AppointmentService {
                         return Collections.emptyList();
                 }
 
-                return schedules.stream()
-                                .flatMap(s -> timeSlotRepository.findByScheduleIdAndIsAvailableTrue(s.getId()).stream())
+                WorkingSchedule effectiveSchedule = schedules.get(0);
+
+                if (!effectiveSchedule.getIsAvailable()) {
+                        return Collections.emptyList();
+                }
+
+                return timeSlotRepository.findByScheduleIdAndIsAvailableTrue(effectiveSchedule.getId()).stream()
                                 .filter(ts -> {
                                         // Check if there is an existing appointment for this exact slot
                                         // Based on current logic where 1 slot = 1 appointment
