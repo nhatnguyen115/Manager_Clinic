@@ -90,15 +90,22 @@ public class ChatFunctionService {
             List<WorkingSchedule> schedules = workingScheduleRepository.findByDoctorAndDate(
                     docId, date, date.getDayOfWeek().getValue());
 
+            if (schedules.isEmpty()) {
+                return Collections.emptyList();
+            }
+
+            WorkingSchedule effectiveSchedule = schedules.get(0);
+            if (!effectiveSchedule.getIsAvailable()) {
+                return Collections.emptyList();
+            }
+
             List<Map<String, Object>> result = new ArrayList<>();
-            for (WorkingSchedule ws : schedules) {
-                List<TimeSlot> slots = timeSlotRepository.findByScheduleIdAndIsAvailableTrue(ws.getId());
-                for (TimeSlot ts : slots) {
-                    Map<String, Object> slotMap = new HashMap<>();
-                    slotMap.put("time", ts.getStartTime().toString() + " - " + ts.getEndTime().toString());
-                    slotMap.put("id", ts.getId());
-                    result.add(slotMap);
-                }
+            List<TimeSlot> slots = timeSlotRepository.findByScheduleIdAndIsAvailableTrue(effectiveSchedule.getId());
+            for (TimeSlot ts : slots) {
+                Map<String, Object> slotMap = new HashMap<>();
+                slotMap.put("time", ts.getStartTime().toString() + " - " + ts.getEndTime().toString());
+                slotMap.put("id", ts.getId());
+                result.add(slotMap);
             }
             return result;
         } catch (Exception e) {

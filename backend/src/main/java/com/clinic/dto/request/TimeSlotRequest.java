@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TimeSlotRequest {
+    Integer id;
     LocalTime startTime;
     LocalTime endTime;
     Integer maxPatients;

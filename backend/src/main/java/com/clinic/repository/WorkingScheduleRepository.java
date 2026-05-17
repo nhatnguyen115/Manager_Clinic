@@ -22,7 +22,7 @@ public interface WorkingScheduleRepository extends JpaRepository<WorkingSchedule
         @Query("SELECT ws FROM WorkingSchedule ws WHERE " +
                         "ws.doctor.id = :doctorId AND " +
                         "(ws.specificDate = :date OR (ws.specificDate IS NULL AND ws.dayOfWeek = :dayOfWeek)) " +
-                        "AND ws.isAvailable = true")
+                        "ORDER BY ws.specificDate DESC NULLS LAST")
         List<WorkingSchedule> findByDoctorAndDate(
                         @Param("doctorId") UUID doctorId,
                         @Param("date") LocalDate date,
